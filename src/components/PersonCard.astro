@@ -23,6 +23,13 @@ const {
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const href = `${base}/people/${slug}`;
+// Prefix site base onto absolute-from-root photo paths (e.g. "/people/x.jpg"
+// → "/fbw-web/people/x.jpg"); leave http(s) URLs untouched.
+const photoSrc = photo
+  ? photo.startsWith("http")
+    ? photo
+    : `${base}${photo.startsWith("/") ? photo : "/" + photo}`
+  : undefined;
 const initials = name
   .split(" ")
   .filter(Boolean)
@@ -35,11 +42,11 @@ const initials = name
 <article class="group flex flex-col">
   <a href={href} class="block overflow-hidden bg-paper-200">
     {
-      photo ? (
+      photoSrc ? (
         <img
-          src={photo}
+          src={photoSrc}
           alt={name}
-          class="aspect-[3/4] w-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-[1.02]"
+          class="aspect-[3/4] w-full object-cover transition-all duration-700 group-hover:scale-[1.02]"
           loading="lazy"
         />
       ) : (

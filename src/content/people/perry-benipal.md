@@ -13,6 +13,7 @@ education:
   - "J.D., [Placeholder Law School]"
   - "B.A., [Placeholder University]"
 order: 3
+photo: /people/perry-benipal.jpg
 ---
 
 *Draft biography — to be finalised with Perry Benipal.*

@@ -34,6 +34,7 @@ pnpm-debug.log*
 # Brand source materials (kept locally for team reference, not deployed)
 /FBW Logo/
 /Business Card Design.pdf
+/team photos/
 /*.af
 /*.afpub
 /*~lock*

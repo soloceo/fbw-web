@@ -8,6 +8,7 @@ import PersonCard from "~/components/PersonCard.astro";
 import OfficeCard from "~/components/OfficeCard.astro";
 import InsightCard from "~/components/InsightCard.astro";
 import CTABanner from "~/components/CTABanner.astro";
+import Recognition from "~/components/Recognition.astro";
 import { OFFICES } from "~/data/firm";
 
 const practices = (await getCollection("practices", ({ data }) => !data.draft)).sort(
@@ -30,38 +31,57 @@ const insights = (await getCollection("insights", ({ data }) => !data.draft))
 >
   <Hero />
 
-  <!-- ======= Philosophy / Statement Section ======= -->
+  <!-- ======= Philosophy / Statement Section =======
+       Conservative two-column editorial spread: static-cap label on
+       the left, substantive copy on the right. A named pull quote
+       anchors the tone — attribution matters for gravitas. -->
   <section class="bg-paper-50">
     <div class="container-editorial grid grid-cols-1 gap-12 py-24 md:py-32 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-4 reveal">
-        <span class="eyebrow">The Firm</span>
-        <h2 class="mt-5 font-display text-4xl leading-[1.05] text-ink-900 md:text-5xl">
-          A different kind of partnership.
+        <span class="eyebrow">§ The Firm</span>
+        <h2 class="mt-5 font-display font-semibold text-4xl leading-[1.04] text-ink-900 md:text-5xl">
+          A partnership, in the original sense of the word.
         </h2>
+        <hr class="double-rule double-rule-gold mt-10 max-w-[7rem]" />
       </div>
 
-      <div class="space-y-6 text-lg leading-relaxed text-graphite-700 lg:col-span-7 lg:col-start-6 reveal">
+      <div class="space-y-7 text-[17px] leading-[1.75] text-graphite-700 lg:col-span-7 lg:col-start-6 reveal">
         <p>
-          FBW LLP was founded on a simple idea: that individuals, families, and
-          business owners deserve a law firm where a partner is on every file
-          — and where the first conversation is always about listening.
+          FBW LLP was founded on a straightforward premise: that
+          individuals, families, and business owners deserve a firm where
+          a partner is on every file — accountable from opening to close,
+          reachable between meetings, and prepared to take the call when
+          something unexpected arrives.
         </p>
         <p>
-          Our three founding partners — Seth Freedman, Perry Benipal, and
-          Greg Wu — bring complementary strengths across commercial
-          litigation, real estate, corporate law, and immigration. Our
-          broader team extends that reach into private client work, family
-          law, and employment counsel. Together, we serve clients from
+          The firm's three founding partners — <strong class="font-semibold text-ink-900">Seth Freedman</strong>,
+          <strong class="font-semibold text-ink-900">Perry Benipal</strong>, and
+          <strong class="font-semibold text-ink-900">Greg Wu</strong> — practise in
+          complementary disciplines: commercial litigation, real estate,
+          corporate and commercial law, and the private client work that
+          often connects them. Our broader team extends that reach into
+          immigration, wills&nbsp;&amp;&nbsp;estates, employment, and family
+          law, with a managing partner who holds the standard across three
           offices in Toronto, Markham, and Oakville.
         </p>
-        <p class="border-l-2 border-gold-500 pl-6 font-display text-xl italic text-ink-900">
-          "We would rather know a small number of clients deeply — across
-          their business, their family, their life — than be transaction
-          lawyers to a much larger number."
-        </p>
+
+        <!-- Named pull quote — attribution is the gravitas -->
+        <figure class="mt-10 border-t border-graphite-300 pt-8">
+          <blockquote class="font-display font-medium text-[22px] leading-[1.35] text-ink-900 md:text-[26px]">
+            <span class="font-display text-gold-500" aria-hidden="true">&ldquo;</span>We
+            would rather be your firm for twenty years than your firm for
+            one transaction. Many of our best client relationships have
+            outlasted every other adviser in the file.<span class="font-display text-gold-500" aria-hidden="true">&rdquo;</span>
+          </blockquote>
+          <figcaption class="mt-5 text-sm uppercase tracking-[0.2em] text-graphite-500">
+            <span class="smallcaps text-gold-600">&mdash; The Partners of FBW LLP</span>
+          </figcaption>
+        </figure>
       </div>
     </div>
   </section>
+
+  <Recognition />
 
   <!-- ======= Practice Areas ======= -->
   <section class="bg-paper-100">

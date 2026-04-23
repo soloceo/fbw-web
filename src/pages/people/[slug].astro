@@ -28,6 +28,12 @@ const personOffices = OFFICES.filter((o) =>
   person.data.offices.includes(o.slug),
 );
 
+const photoSrc = person.data.photo
+  ? person.data.photo.startsWith("http")
+    ? person.data.photo
+    : `${base}${person.data.photo.startsWith("/") ? person.data.photo : "/" + person.data.photo}`
+  : undefined;
+
 const initials = person.data.name
   .split(" ")
   .filter(Boolean)
@@ -70,9 +76,9 @@ const schema = {
       <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
         <div class="lg:col-span-5">
           {
-            person.data.photo ? (
+            photoSrc ? (
               <img
-                src={person.data.photo}
+                src={photoSrc}
                 alt={person.data.name}
                 class="aspect-[3/4] w-full object-cover"
               />

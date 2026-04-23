@@ -13,6 +13,7 @@ education:
   - "J.D., [Placeholder Law School]"
   - "B.A., [Placeholder University]"
 order: 1
+photo: /people/greg-wu.jpg
 ---
 
 *Draft biography — to be finalised with Greg Wu.*

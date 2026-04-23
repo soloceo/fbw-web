@@ -13,6 +13,7 @@ education:
   - "J.D., [Placeholder Law School]"
   - "B.A., [Placeholder University]"
 order: 2
+photo: /people/seth-freedman.jpg
 ---
 
 *Draft biography — to be finalised with Seth Freedman.*

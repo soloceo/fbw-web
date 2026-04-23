@@ -6,25 +6,29 @@
    ========================================================================== */
 
 @theme {
-  /* —————— BRAND PALETTE —————— */
-  /* Ink: warm near-black for headers, hero, footer */
-  --color-ink-950: #0a0b0d;
-  --color-ink-900: #13151a;
-  --color-ink-800: #1f2128;
-  --color-ink-700: #2a2d35;
-  --color-ink-600: #3a3d46;
+  /* —————— BRAND PALETTE ——————
+     Deep institutional palette — the gravitas of a century-old firm
+     on the trim of Bay Street. Navy-tinted ink, burnished gold,
+     warm paper. No bright yellows; no pure blacks.                     */
+
+  /* Ink: midnight navy, not pure black — softer, warmer authority */
+  --color-ink-950: #080d18;
+  --color-ink-900: #0c1524;
+  --color-ink-800: #162138;
+  --color-ink-700: #1f2d48;
+  --color-ink-600: #364662;
 
   /* Paper: warm cream / off-white, the signature editorial base */
   --color-paper-50: #faf9f5;
-  --color-paper-100: #f5f3eb;
-  --color-paper-200: #ece9de;
-  --color-paper-300: #d9d4c2;
+  --color-paper-100: #f3f1ea;
+  --color-paper-200: #e6e2d4;
+  --color-paper-300: #cfc9b8;
 
-  /* Gold: heritage trio from brand gradient */
-  --color-gold-400: #ffc064;
-  --color-gold-500: #c89140;
-  --color-gold-600: #9f7330;
-  --color-gold-700: #7a5623;
+  /* Gold: burnished heritage trio — matte book-edge gold, not foil */
+  --color-gold-400: #c9a35c;   /* highlight only (gradients, hover) */
+  --color-gold-500: #a07836;   /* primary — burnished, serious */
+  --color-gold-600: #805d24;   /* deep — hover / pressed states */
+  --color-gold-700: #5c4218;   /* rarely used — shadow tone */
 
   /* Neutrals tuned for text on cream */
   --color-graphite-900: #1a1a1a;
@@ -81,12 +85,14 @@
     font-variant-numeric: oldstyle-nums proportional-nums;
   }
 
-  /* Display headings — serif, classical, confident */
+  /* Display headings — serif, classical, confident
+     Weight 500 gives more gravitas than 400 without straying into
+     the heaviness of 700+; 1.05 line-height tightens large display. */
   h1, h2, h3, h4, h5, h6, .font-display {
     font-family: var(--font-display);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.01em;
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.012em;
     color: var(--color-ink-900);
   }
 
@@ -186,6 +192,32 @@
       var(--color-gold-500)
     );
     border: 0;
+  }
+
+  /* Editorial double rule — classical newspaper / book divider.
+     Two parallel hairlines separated by a sliver of whitespace,
+     used above major section breaks on the home page. */
+  .double-rule {
+    height: 7px;
+    border-top: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    background: transparent;
+  }
+  .double-rule-ink { color: var(--color-ink-900); }
+  .double-rule-gold { color: var(--color-gold-500); }
+
+  /* Institutional columned backdrop — evokes classical colonnade
+     without the literal imagery. Thin vertical rules at a wide
+     rhythm, on top of which the hero composition sits. */
+  .colonnade-bg {
+    background-image: linear-gradient(
+      to right,
+      transparent 0,
+      transparent calc(100% - 1px),
+      color-mix(in srgb, currentColor 18%, transparent) calc(100% - 1px),
+      color-mix(in srgb, currentColor 18%, transparent) 100%
+    );
+    background-size: 160px 100%;
   }
 
   /* Subtle hover underline for inline link emphasis */
