@@ -2,8 +2,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import SectionHeading from "~/components/SectionHeading.astro";
 import { FIRM, OFFICES } from "~/data/firm";
-
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+import { withBase } from "~/lib/url";
 ---
 
 <BaseLayout
@@ -33,11 +32,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           act for you.
         </p>
 
+        {/*
+          Template form: on submit, the browser opens the user's default
+          mail client pre-filled with a plain-text summary of every field.
+          This is a graceful fallback that works on every device without
+          a backend.  When the site moves to Cloudflare Workers, swap in
+          a POST endpoint (e.g. /api/contact) with Turnstile + rate
+          limiting — see README for the migration plan.
+        */}
         <form
-          action={`mailto:${FIRM.email}`}
-          method="post"
-          enctype="text/plain"
+          id="contact-form"
           class="mt-10 grid grid-cols-1 gap-6"
+          novalidate
         >
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <label class="flex flex-col gap-2 text-sm">
@@ -135,6 +141,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
             </span>
           </label>
 
+          {/* Honeypot — real users never fill this; bots fill every field. */}
+          <label class="sr-only" aria-hidden="true">
+            Website
+            <input type="text" name="company_website" tabindex="-1" autocomplete="off" />
+          </label>
+
           <div class="mt-2">
             <button
               type="submit"
@@ -144,6 +156,32 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
             </button>
           </div>
         </form>
+
+        <script is:inline define:vars={{ email: FIRM.email }}>
+          // Template behaviour: open the user's email client with a
+          // properly encoded mailto URL built from the form data. When
+          // a real backend lands, replace this with fetch('/api/contact').
+          const form = document.getElementById("contact-form");
+          form?.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const data = new FormData(form);
+            if (data.get("company_website")) return; // honeypot
+            if (!form.checkValidity()) {
+              form.reportValidity();
+              return;
+            }
+            const lines = [];
+            const label = (k) => k.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+            for (const [k, v] of data.entries()) {
+              if (k === "company_website" || k === "consent") continue;
+              if (!v) continue;
+              lines.push(`${label(k)}: ${v}`);
+            }
+            const subject = `Website enquiry — ${data.get("name") ?? "New prospect"}`;
+            const body = lines.join("\n\n");
+            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+          });
+        </script>
       </div>
 
       <!-- Side info -->
@@ -174,7 +212,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                 {office.city}, {office.province} {office.postal}
               </address>
               <a
-                href={`${base}/offices/${office.slug}`}
+                href={withBase(`/offices/${office.slug}`)}
                 class="mt-3 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-ink-900 hover:text-gold-600"
               >
                 Office details <span aria-hidden="true">→</span>

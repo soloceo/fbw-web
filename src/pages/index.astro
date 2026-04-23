@@ -10,6 +10,7 @@ import InsightCard from "~/components/InsightCard.astro";
 import CTABanner from "~/components/CTABanner.astro";
 import Recognition from "~/components/Recognition.astro";
 import { OFFICES } from "~/data/firm";
+import { withBase } from "~/lib/url";
 
 const practices = (await getCollection("practices", ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
@@ -117,7 +118,7 @@ const insights = (await getCollection("insights", ({ data }) => !data.draft))
 
       <div class="mt-12 flex justify-end">
         <a
-          href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/practice-areas`}
+          href={withBase("/practice-areas")}
           class="inline-flex items-center gap-3 text-sm uppercase tracking-[0.22em] text-ink-900 hover:text-gold-600"
         >
           View all practice areas <span aria-hidden="true">→</span>
@@ -153,7 +154,7 @@ const insights = (await getCollection("insights", ({ data }) => !data.draft))
 
       <div class="mt-12 flex justify-end">
         <a
-          href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/people`}
+          href={withBase("/people")}
           class="inline-flex items-center gap-3 text-sm uppercase tracking-[0.22em] text-ink-900 hover:text-gold-600"
         >
           Meet the team <span aria-hidden="true">→</span>
@@ -205,7 +206,7 @@ const insights = (await getCollection("insights", ({ data }) => !data.draft))
         </div>
         <div class="lg:col-span-4 lg:text-right">
           <a
-            href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/insights`}
+            href={withBase("/insights")}
             class="inline-flex items-center gap-3 text-sm uppercase tracking-[0.22em] text-ink-900 hover:text-gold-600"
           >
             All insights <span aria-hidden="true">→</span>

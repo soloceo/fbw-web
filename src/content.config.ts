@@ -1,6 +1,25 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
+/**
+ * Known office and practice slugs — the source of truth.
+ * Keep in sync with `src/data/firm.ts#OFFICES` and the filenames
+ * under `src/content/practices/`. Typos in frontmatter will now
+ * fail at build time rather than silently excluding a person from
+ * their own practice / office page.
+ */
+const OFFICE_SLUGS = ["toronto", "markham", "oakville"] as const;
+const PRACTICE_SLUGS = [
+  "real-estate",
+  "corporate-commercial",
+  "commercial-litigation",
+  "wills-estates",
+  "immigration",
+  "family-law",
+  "employment",
+  "tax",
+] as const;
+
 /* People — founding partners & team */
 const people = defineCollection({
   loader: glob({ base: "./src/content/people", pattern: "**/*.md" }),
@@ -11,8 +30,8 @@ const people = defineCollection({
     email: z.string().email().optional(),
     phone: z.string().optional(),
     altPhone: z.string().optional(),
-    offices: z.array(z.string()).default(["toronto"]),
-    practices: z.array(z.string()).default([]),
+    offices: z.array(z.enum(OFFICE_SLUGS)).default(["toronto"]),
+    practices: z.array(z.enum(PRACTICE_SLUGS)).default([]),
     languages: z.array(z.string()).default(["English"]),
     barAdmissions: z.array(z.string()).default([]),
     education: z.array(z.string()).default([]),
@@ -46,8 +65,9 @@ const insights = defineCollection({
     summary: z.string(),
     category: z.enum(["article", "alert", "news", "case-study"]).default("article"),
     publishedAt: z.coerce.date(),
+    updatedAt: z.coerce.date().optional(),
     author: z.string(),
-    practices: z.array(z.string()).default([]),
+    practices: z.array(z.enum(PRACTICE_SLUGS)).default([]),
     tags: z.array(z.string()).default([]),
     heroImage: z.string().optional(),
     draft: z.boolean().default(false),

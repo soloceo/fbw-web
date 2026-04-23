@@ -1,0 +1,88 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import CTABanner from "~/components/CTABanner.astro";
+import { FIRM } from "~/data/firm";
+---
+
+<BaseLayout
+  title="Privacy Policy"
+  description="FBW LLP's privacy policy describing how we collect, use, and protect personal information in accordance with Canadian privacy law."
+>
+  <section class="border-b border-graphite-200 bg-paper-50">
+    <div class="container-editorial pt-20 pb-20 md:pt-28 md:pb-24">
+      <SectionHeading
+        eyebrow="Privacy"
+        title="How we handle your information."
+        lede="This policy describes how FBW LLP collects, uses, discloses, and protects personal information in the course of providing legal services."
+        as="h1"
+      />
+    </div>
+  </section>
+
+  <section class="bg-paper-50">
+    <div class="container-reading space-y-8 py-16 text-[17px] leading-[1.75] text-graphite-700 md:py-24">
+      <p class="border-l-2 border-gold-500 pl-6 text-graphite-500">
+        <em>Template policy — to be finalised by the firm with the
+        assistance of its chosen privacy counsel. This text does not
+        constitute a binding privacy policy and must not be relied on
+        until it has been reviewed, completed, and published by FBW LLP.</em>
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">Information we collect</h2>
+      <p>
+        We collect personal information that you provide to us directly —
+        for example, when you request a consultation, retain the firm,
+        correspond with us by email, or attend a meeting at one of our
+        offices. Typical categories include: name, contact details,
+        identification documents, financial information relevant to a
+        matter, and any facts you choose to share with us.
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">How we use your information</h2>
+      <p>
+        We use personal information to provide legal services, conduct
+        conflict checks, comply with professional and regulatory
+        obligations (including those imposed by the Law Society of
+        Ontario), administer our accounts, and communicate with you about
+        your file.
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">Disclosure of information</h2>
+      <p>
+        We may disclose personal information to other lawyers, paralegals,
+        or staff of the firm working on your matter; to external counsel,
+        experts, or service providers retained in connection with your
+        matter; to courts and regulatory authorities where required; and
+        otherwise as permitted or required by law.
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">Retention and security</h2>
+      <p>
+        We retain personal information for as long as necessary to fulfil
+        the purposes for which it was collected and to meet our legal and
+        professional obligations. We use reasonable administrative,
+        physical, and technical safeguards to protect personal information
+        against loss, theft, and unauthorised access.
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">Your rights</h2>
+      <p>
+        You may request access to, or correction of, the personal
+        information we hold about you by contacting our Privacy Officer at
+        <a href={`mailto:${FIRM.email}`} class="text-gold-600 underline">{FIRM.email}</a>.
+        We will respond within the timelines required by applicable
+        legislation.
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">Changes to this policy</h2>
+      <p>
+        We may update this policy from time to time. The version in effect
+        at any given time is the version posted on this page. Last
+        reviewed: [placeholder — to be updated by firm].
+      </p>
+    </div>
+  </section>
+
+  <CTABanner />
+</BaseLayout>

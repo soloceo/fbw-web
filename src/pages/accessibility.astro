@@ -1,0 +1,74 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import CTABanner from "~/components/CTABanner.astro";
+import { FIRM } from "~/data/firm";
+---
+
+<BaseLayout
+  title="Accessibility"
+  description="FBW LLP's commitment to accessibility in accordance with the Accessibility for Ontarians with Disabilities Act (AODA)."
+>
+  <section class="border-b border-graphite-200 bg-paper-50">
+    <div class="container-editorial pt-20 pb-20 md:pt-28 md:pb-24">
+      <SectionHeading
+        eyebrow="Accessibility"
+        title="A commitment to accessible service."
+        lede="FBW LLP is committed to providing a barrier-free environment for clients, employees, job applicants, suppliers, and any visitors who may enter our premises or access our services, in accordance with the Accessibility for Ontarians with Disabilities Act (AODA) and the Integrated Accessibility Standards Regulation."
+        as="h1"
+      />
+    </div>
+  </section>
+
+  <section class="bg-paper-50">
+    <div class="container-reading space-y-8 py-16 text-[17px] leading-[1.75] text-graphite-700 md:py-24">
+      <h2 class="font-display text-3xl text-ink-900">Accessible customer service</h2>
+      <p>
+        We strive to provide our services in a way that respects the dignity
+        and independence of persons with disabilities. We are committed to
+        giving persons with disabilities the same opportunity to access our
+        services and allowing them to benefit from the same services, in the
+        same place, and in a similar way as other clients.
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">Website accessibility</h2>
+      <p>
+        This website has been designed to meet Web Content Accessibility
+        Guidelines (WCAG) 2.1 Level AA. We test with keyboard-only
+        navigation, supported screen readers, and a range of mobile devices,
+        and we review accessibility on every material update to the site.
+      </p>
+      <p>
+        If you experience any difficulty accessing any part of this website,
+        or have a suggestion for improvement, please contact us at
+        <a href={`mailto:${FIRM.email}`} class="text-gold-600 underline">{FIRM.email}</a>
+        or by phone at
+        <a href={`tel:${FIRM.mainPhone.replace(/\s/g, "")}`} class="nums text-gold-600 underline">{FIRM.mainPhone}</a>.
+        We will work with you to provide the information you need in an
+        alternative format.
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">Accommodations and feedback</h2>
+      <p>
+        If you require an accommodation to communicate with the firm, attend
+        an appointment, or access a document, please let us know. We will
+        consult with you to determine a reasonable accommodation that meets
+        your individual needs.
+      </p>
+      <p>
+        Feedback about the accessibility of our services is welcome at any
+        time and may be submitted in the format most convenient to you
+        (email, telephone, letter, or in person). We will respond to
+        feedback within ten business days.
+      </p>
+
+      <p class="text-sm text-graphite-500">
+        This statement is reviewed annually, or whenever material changes
+        are made to the firm's public website or physical premises. Last
+        reviewed: [placeholder — to be updated by firm].
+      </p>
+    </div>
+  </section>
+
+  <CTABanner />
+</BaseLayout>

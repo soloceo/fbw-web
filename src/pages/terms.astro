@@ -1,0 +1,79 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import CTABanner from "~/components/CTABanner.astro";
+---
+
+<BaseLayout
+  title="Terms of Use"
+  description="Terms of use governing the FBW LLP website. This website does not constitute legal advice."
+>
+  <section class="border-b border-graphite-200 bg-paper-50">
+    <div class="container-editorial pt-20 pb-20 md:pt-28 md:pb-24">
+      <SectionHeading
+        eyebrow="Terms of Use"
+        title="Using this website."
+        lede="By accessing the FBW LLP website, you accept the following terms of use. Please read them carefully before relying on anything published here."
+        as="h1"
+      />
+    </div>
+  </section>
+
+  <section class="bg-paper-50">
+    <div class="container-reading space-y-8 py-16 text-[17px] leading-[1.75] text-graphite-700 md:py-24">
+      <p class="border-l-2 border-gold-500 pl-6 text-graphite-500">
+        <em>Template terms — to be finalised by the firm. This text does
+        not constitute binding terms of use until it has been reviewed,
+        completed, and published by FBW LLP.</em>
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">No legal advice</h2>
+      <p>
+        The information on this website is provided for general
+        information only. It is not legal advice, does not create a
+        solicitor–client relationship, and must not be relied on as a
+        substitute for advice provided to you in the context of a
+        retainer with FBW LLP in respect of a specific matter.
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">No retainer implied</h2>
+      <p>
+        A solicitor–client relationship with FBW LLP is established only
+        after the firm has completed a conflicts check, communicated a
+        written engagement letter to you, and that letter has been
+        accepted. Sending us information via this website or by email
+        before a retainer is in place does not create any duty on the
+        firm's part and may not be treated as confidential.
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">Third-party links</h2>
+      <p>
+        This website may contain links to third-party websites. Those
+        links are provided for convenience only; FBW LLP does not endorse
+        or take responsibility for the content of any third-party site.
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">Intellectual property</h2>
+      <p>
+        All content on this website — including text, graphics, logos, and
+        images — is the property of FBW LLP or is used with permission and
+        is protected by Canadian and international copyright laws. You may
+        view and print pages for your own personal, non-commercial use.
+        Any other reproduction or distribution requires the firm's written
+        consent.
+      </p>
+
+      <h2 class="font-display text-3xl text-ink-900">Limitation of liability</h2>
+      <p>
+        FBW LLP is not liable for any loss or damage arising from the use
+        of, or inability to use, this website or its contents.
+      </p>
+
+      <p class="text-sm text-graphite-500">
+        Last reviewed: [placeholder — to be updated by firm].
+      </p>
+    </div>
+  </section>
+
+  <CTABanner />
+</BaseLayout>

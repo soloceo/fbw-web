@@ -3,6 +3,7 @@ import { getCollection, getEntry, render } from "astro:content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import CTABanner from "~/components/CTABanner.astro";
 import { OFFICES, FIRM } from "~/data/firm";
+import { withBase } from "~/lib/url";
 
 export async function getStaticPaths() {
   const people = await getCollection("people", ({ data }) => !data.draft);
@@ -15,8 +16,6 @@ export async function getStaticPaths() {
 const { person } = Astro.props;
 const { Content } = await render(person);
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-
 const practiceEntries = await Promise.all(
   person.data.practices.map((slug) => getEntry("practices", slug)),
 );
@@ -28,11 +27,7 @@ const personOffices = OFFICES.filter((o) =>
   person.data.offices.includes(o.slug),
 );
 
-const photoSrc = person.data.photo
-  ? person.data.photo.startsWith("http")
-    ? person.data.photo
-    : `${base}${person.data.photo.startsWith("/") ? person.data.photo : "/" + person.data.photo}`
-  : undefined;
+const photoSrc = person.data.photo ? withBase(person.data.photo) : undefined;
 
 const initials = person.data.name
   .split(" ")
@@ -68,7 +63,7 @@ const schema = {
   <section class="border-b border-graphite-200 bg-paper-50">
     <div class="container-editorial pt-16 pb-16 md:pt-20 md:pb-20">
       <nav aria-label="Breadcrumb" class="mb-8 text-xs uppercase tracking-[0.2em] text-graphite-500">
-        <a href={`${base}/people`} class="link-underline hover:text-gold-600">Our People</a>
+        <a href={withBase("/people")} class="link-underline hover:text-gold-600">Our People</a>
         <span class="mx-2">/</span>
         <span class="text-graphite-700">{person.data.name}</span>
       </nav>
@@ -79,7 +74,11 @@ const schema = {
             photoSrc ? (
               <img
                 src={photoSrc}
-                alt={person.data.name}
+                alt=""
+                width="900"
+                height="1200"
+                decoding="async"
+                fetchpriority="high"
                 class="aspect-[3/4] w-full object-cover"
               />
             ) : (
@@ -184,7 +183,7 @@ const schema = {
                 {practices.map((p) => (
                   <li>
                     <a
-                      href={`${base}/practice-areas/${p.id}`}
+                      href={withBase(`/practice-areas/${p.id}`)}
                       class="font-display text-lg text-ink-900 transition-colors hover:text-gold-600"
                     >
                       {p.data.title}

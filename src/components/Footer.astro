@@ -1,8 +1,8 @@
 ---
 import { FIRM, NAV_FOOTER, OFFICES } from "~/data/firm";
+import { withBase } from "~/lib/url";
 
 const year = new Date().getFullYear();
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
 <footer class="bg-ink-950 text-paper-100">
@@ -11,9 +11,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     <div class="grid grid-cols-1 gap-12 border-b border-ink-800 pb-12 lg:grid-cols-12 lg:gap-8">
       <div class="lg:col-span-5">
         <img
-          src={`${base}/brand/logo-white.svg`}
+          src={withBase("brand/logo-white.svg")}
           alt={FIRM.name}
+          width="300"
+          height="142"
           class="h-12 w-auto"
+          decoding="async"
         />
         <p class="mt-6 max-w-md text-sm leading-relaxed text-paper-200/80">
           {FIRM.longDescription}
@@ -34,7 +37,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         <ul class="mt-5 space-y-2.5 text-sm">
           {NAV_FOOTER.firm.map((item) => (
             <li>
-              <a href={`${base}${item.href}`} class="text-paper-200/80 transition-colors hover:text-gold-400">
+              <a href={withBase(item.href)} class="text-paper-200/80 transition-colors hover:text-gold-400">
                 {item.label}
               </a>
             </li>
@@ -47,7 +50,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         <ul class="mt-5 space-y-2.5 text-sm">
           {NAV_FOOTER.work.map((item) => (
             <li>
-              <a href={`${base}${item.href}`} class="text-paper-200/80 transition-colors hover:text-gold-400">
+              <a href={withBase(item.href)} class="text-paper-200/80 transition-colors hover:text-gold-400">
                 {item.label}
               </a>
             </li>
@@ -60,7 +63,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         <ul class="mt-5 space-y-5 text-sm">
           {OFFICES.map((office) => (
             <li>
-              <a href={`${base}/offices/${office.slug}`} class="group block">
+              <a href={withBase(`/offices/${office.slug}`)} class="group block">
                 <span class="smallcaps block text-xs text-gold-500 group-hover:text-gold-400">
                   {office.name} {office.role === "Head Office" && "· Head Office"}
                 </span>
@@ -78,7 +81,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     </div>
 
     <!-- Bottom row -->
-    <div class="flex flex-col gap-6 pt-8 text-xs text-paper-200/60 md:flex-row md:items-center md:justify-between">
+    <div class="flex flex-col gap-6 pt-8 text-xs text-paper-200/80 md:flex-row md:items-center md:justify-between">
       <p>
         © {year} {FIRM.legalName}. All rights reserved. FBW LLP is a Limited Liability Partnership
         established in Ontario, Canada.
@@ -86,7 +89,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       <ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
         {NAV_FOOTER.legal.map((item) => (
           <li>
-            <a href={`${base}${item.href}`} class="hover:text-gold-400">
+            <a href={withBase(item.href)} class="hover:text-gold-400">
               {item.label}
             </a>
           </li>

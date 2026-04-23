@@ -1,5 +1,6 @@
 ---
 import { FIRM, NAV_PRIMARY } from "~/data/firm";
+import { BASE, withBase } from "~/lib/url";
 
 export interface Props {
   theme?: "paper" | "ink";
@@ -7,10 +8,7 @@ export interface Props {
 
 const { theme = "paper" } = Astro.props;
 const isInk = theme === "ink";
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const logoSrc = isInk
-  ? `${base}/brand/logo-white.svg`
-  : `${base}/brand/logo-black.svg`;
+const logoSrc = withBase(isInk ? "brand/logo-white.svg" : "brand/logo-black.svg");
 
 const currentPath = Astro.url.pathname.replace(/\/$/, "");
 ---
@@ -24,8 +22,8 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "");
   ]}
 >
   <div class="container-editorial flex items-center justify-between py-5 lg:py-7">
-    <a href={`${base}/`} class="inline-flex items-center" aria-label={`${FIRM.name} — Home`}>
-      <img src={logoSrc} alt={FIRM.name} class="h-8 w-auto md:h-10" />
+    <a href={`${BASE}/`} class="inline-flex items-center" aria-label={`${FIRM.name} — Home`}>
+      <img src={logoSrc} alt="" width="300" height="142" class="h-8 w-auto md:h-10" />
     </a>
 
     <!-- Desktop nav -->
@@ -40,7 +38,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "");
             return (
               <li>
                 <a
-                  href={`${base}${item.href}`}
+                  href={withBase(item.href)}
                   class:list={[
                     "relative text-[13px] uppercase tracking-[0.18em] transition-colors",
                     active
@@ -66,7 +64,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "");
     </nav>
 
     <a
-      href={`${base}/contact`}
+      href={withBase("/contact")}
       class:list={[
         "hidden items-center gap-2 border px-5 py-2.5 text-[12px] uppercase tracking-[0.2em] transition-all lg:inline-flex",
         isInk
@@ -81,14 +79,18 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "");
     <!-- Mobile menu toggle -->
     <button
       type="button"
-      class="lg:hidden inline-flex h-10 w-10 items-center justify-center"
+      class="lg:hidden inline-flex h-11 w-11 items-center justify-center"
       aria-expanded="false"
       aria-controls="mobile-nav"
+      aria-label="Open menu"
       data-nav-toggle
     >
       <span class="sr-only">Toggle menu</span>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" data-icon-menu>
         <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+      </svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="hidden" data-icon-close>
+        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
       </svg>
     </button>
   </div>
@@ -105,7 +107,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "");
           NAV_PRIMARY.map((item) => (
             <li>
               <a
-                href={`${base}${item.href}`}
+                href={withBase(item.href)}
                 class="block border-b border-graphite-200 py-3 font-display text-2xl text-ink-900 transition-colors hover:text-gold-600"
               >
                 {item.label}
@@ -115,7 +117,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "");
         }
       </ul>
       <a
-        href={`${base}/contact`}
+        href={withBase("/contact")}
         class="mt-6 inline-flex w-full items-center justify-center gap-2 border border-ink-900 px-5 py-3 text-[12px] uppercase tracking-[0.2em] text-ink-900"
       >
         Request Consultation
@@ -125,10 +127,55 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "");
 </header>
 
 <script>
+  /**
+   * Mobile navigation — accessibility-first drawer
+   * - Move focus into the drawer on open (first nav link)
+   * - Return focus to the toggle on close
+   * - Escape key closes the drawer
+   * - Body scroll is locked while the drawer is open
+   * - Hamburger ↔ close icon swap
+   */
   const toggle = document.querySelector<HTMLButtonElement>("[data-nav-toggle]");
   const panel = document.querySelector<HTMLDivElement>("[data-nav-panel]");
+  const iconMenu = toggle?.querySelector<SVGElement>("[data-icon-menu]");
+  const iconClose = toggle?.querySelector<SVGElement>("[data-icon-close]");
+
+  function openNav() {
+    if (!panel || !toggle) return;
+    panel.classList.remove("hidden");
+    toggle.setAttribute("aria-expanded", "true");
+    toggle.setAttribute("aria-label", "Close menu");
+    iconMenu?.classList.add("hidden");
+    iconClose?.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+    panel.querySelector<HTMLAnchorElement>("a")?.focus();
+  }
+
+  function closeNav(returnFocus = true) {
+    if (!panel || !toggle) return;
+    panel.classList.add("hidden");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Open menu");
+    iconMenu?.classList.remove("hidden");
+    iconClose?.classList.add("hidden");
+    document.body.style.overflow = "";
+    if (returnFocus) toggle.focus();
+  }
+
   toggle?.addEventListener("click", () => {
-    const open = panel?.classList.toggle("hidden") === false;
-    toggle.setAttribute("aria-expanded", String(open));
+    if (toggle.getAttribute("aria-expanded") === "true") closeNav();
+    else openNav();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && toggle?.getAttribute("aria-expanded") === "true") {
+      closeNav();
+    }
+  });
+
+  // Close when a nav link is tapped (single-page navigation feels abandoned
+  // otherwise on mobile browsers that preserve DOM across navigations).
+  panel?.addEventListener("click", (e) => {
+    if ((e.target as HTMLElement).closest("a")) closeNav(false);
   });
 </script>

@@ -2,6 +2,7 @@
 import { getCollection, getEntry, render } from "astro:content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import CTABanner from "~/components/CTABanner.astro";
+import { withBase } from "~/lib/url";
 
 export async function getStaticPaths() {
   const practices = await getCollection("practices", ({ data }) => !data.draft);
@@ -15,13 +16,13 @@ const { practice } = Astro.props;
 const { Content } = await render(practice);
 
 const allPeople = await getCollection("people", ({ data }) => !data.draft);
-const relatedPeople = allPeople.filter((p) => p.data.practices.includes(practice.id));
+const relatedPeople = allPeople.filter((p) =>
+  (p.data.practices as readonly string[]).includes(practice.id),
+);
 
 const leadPartner = practice.data.leadPartner
   ? await getEntry("people", practice.data.leadPartner)
   : undefined;
-
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 /* LegalService schema for this specific practice */
 const schema = {
@@ -45,7 +46,7 @@ const schema = {
   <section class="border-b border-graphite-200 bg-paper-50">
     <div class="container-editorial pt-16 pb-20 md:pt-24 md:pb-24">
       <nav aria-label="Breadcrumb" class="mb-8 text-xs uppercase tracking-[0.2em] text-graphite-500">
-        <a href={`${base}/practice-areas`} class="link-underline hover:text-gold-600">
+        <a href={withBase("/practice-areas")} class="link-underline hover:text-gold-600">
           Practice Areas
         </a>
         <span class="mx-2">/</span>
@@ -91,7 +92,7 @@ const schema = {
             <div class="border-t border-graphite-300 pt-6">
               <h3 class="eyebrow">Lead partner</h3>
               <a
-                href={`${base}/people/${leadPartner.id}`}
+                href={withBase(`/people/${leadPartner.id}`)}
                 class="mt-5 block"
               >
                 <p class="font-display text-2xl text-ink-900 transition-colors hover:text-gold-600">
@@ -111,7 +112,7 @@ const schema = {
                 {relatedPeople.map((person) => (
                   <li>
                     <a
-                      href={`${base}/people/${person.id}`}
+                      href={withBase(`/people/${person.id}`)}
                       class="group block"
                     >
                       <p class="font-display text-lg text-ink-900 transition-colors group-hover:text-gold-600">

@@ -4,6 +4,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import CTABanner from "~/components/CTABanner.astro";
 import PersonCard from "~/components/PersonCard.astro";
 import { OFFICES, FIRM } from "~/data/firm";
+import { withBase } from "~/lib/url";
 
 export async function getStaticPaths() {
   return OFFICES.map((office) => ({
@@ -13,7 +14,6 @@ export async function getStaticPaths() {
 }
 
 const { office } = Astro.props;
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const fullAddress = `${office.address1}${office.address2 ? ", " + office.address2 : ""}, ${office.city}, ${office.province} ${office.postal}`;
 const mapsEmbed = `https://www.google.com/maps?q=${encodeURIComponent(fullAddress)}&output=embed`;
@@ -55,7 +55,7 @@ const schema = {
   <section class="border-b border-graphite-200 bg-paper-50">
     <div class="container-editorial pt-16 pb-16 md:pt-20 md:pb-16">
       <nav aria-label="Breadcrumb" class="mb-8 text-xs uppercase tracking-[0.2em] text-graphite-500">
-        <a href={`${base}/offices`} class="link-underline hover:text-gold-600">Offices</a>
+        <a href={withBase("/offices")} class="link-underline hover:text-gold-600">Offices</a>
         <span class="mx-2">/</span>
         <span class="text-graphite-700">{office.name}</span>
       </nav>
@@ -130,7 +130,7 @@ const schema = {
     officePeople.length > 0 && (
       <section class="bg-paper-50">
         <div class="container-editorial py-20 md:py-28">
-          <h2 class="eyebrow">Based at this office</h2>
+          <p class="eyebrow">Based at this office</p>
           <div class="mt-8 grid grid-cols-2 gap-8 md:grid-cols-3 md:gap-10">
             {officePeople.map((person) => (
               <PersonCard

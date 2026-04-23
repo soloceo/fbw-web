@@ -3,6 +3,7 @@ import { getCollection, render } from "astro:content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import CTABanner from "~/components/CTABanner.astro";
 import { FIRM } from "~/data/firm";
+import { withBase } from "~/lib/url";
 
 export async function getStaticPaths() {
   const insights = await getCollection("insights", ({ data }) => !data.draft);
@@ -15,27 +16,36 @@ export async function getStaticPaths() {
 const { article } = Astro.props;
 const { Content } = await render(article);
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-
 const dateStr = article.data.publishedAt.toLocaleDateString("en-CA", {
   year: "numeric",
   month: "long",
   day: "numeric",
 });
 
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const fallbackImage = new URL(
+  withBase("brand/logo-gold.svg"),
+  Astro.site ?? new URL("http://localhost"),
+).toString();
+
 const schema = {
   "@context": "https://schema.org",
   "@type": "Article",
   headline: article.data.title,
   description: article.data.summary,
+  image: article.data.heroImage ? withBase(article.data.heroImage) : fallbackImage,
   datePublished: article.data.publishedAt.toISOString(),
+  ...(article.data.updatedAt && {
+    dateModified: article.data.updatedAt.toISOString(),
+  }),
   author: { "@type": "Person", name: article.data.author },
   publisher: {
-    "@type": "LegalService",
+    "@type": "Organization",
     name: FIRM.legalName,
-    url: FIRM.website,
+    logo: { "@type": "ImageObject", url: fallbackImage },
   },
-  url: new URL(Astro.url.pathname, Astro.site).toString(),
+  mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
+  url: canonicalUrl,
 };
 
 const categoryLabel: Record<string, string> = {
@@ -54,9 +64,9 @@ const categoryLabel: Record<string, string> = {
   <section class="border-b border-graphite-200 bg-paper-50">
     <div class="container-reading pt-16 pb-12 md:pt-20">
       <nav aria-label="Breadcrumb" class="mb-8 text-xs uppercase tracking-[0.2em] text-graphite-500">
-        <a href={`${base}/insights`} class="link-underline hover:text-gold-600">Insights</a>
+        <a href={withBase("/insights")} class="link-underline hover:text-gold-600">Insights</a>
         <span class="mx-2">/</span>
-        <span class="text-graphite-700">{categoryLabel[article.data.category]}</span>
+        <span class="text-graphite-700">{categoryLabel[article.data.category] ?? article.data.category}</span>
       </nav>
 
       <div class="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-gold-600">

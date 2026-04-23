@@ -34,7 +34,7 @@ const others = people.filter(
   <!-- Founding partners -->
   <section class="bg-paper-50">
     <div class="container-editorial py-20 md:py-28">
-      <h2 class="eyebrow">Founding Partners</h2>
+      <p class="eyebrow">Founding Partners</p>
       <div class="mt-8 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
         {
           founders.map((person) => (
@@ -58,7 +58,7 @@ const others = people.filter(
     managing.length > 0 && (
       <section class="bg-paper-100">
         <div class="container-editorial py-20 md:py-24">
-          <h2 class="eyebrow">Managing Partner</h2>
+          <p class="eyebrow">Managing Partner</p>
           <div class="mt-8 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
             {managing.map((person) => (
               <PersonCard
@@ -81,7 +81,7 @@ const others = people.filter(
     others.length > 0 && (
       <section class="bg-paper-50">
         <div class="container-editorial py-20 md:py-24">
-          <h2 class="eyebrow">Team</h2>
+          <p class="eyebrow">Team</p>
           <div class="mt-8 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
             {others.map((person) => (
               <PersonCard

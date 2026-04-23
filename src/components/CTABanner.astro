@@ -1,5 +1,6 @@
 ---
 import { FIRM } from "~/data/firm";
+import { withBase } from "~/lib/url";
 
 export interface Props {
   eyebrow?: string;
@@ -9,13 +10,12 @@ export interface Props {
   ctaHref?: string;
 }
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const {
   eyebrow = "Engage counsel",
   title = "Direct counsel. Documented outcomes.",
   body = `Tell us about the matter in front of you. We will respond within one business day — and, where our scope and conflicts permit, arrange an initial consultation with the partner best suited to your file.`,
   ctaLabel = "Request Consultation",
-  ctaHref = `${base}/contact`,
+  ctaHref = withBase("/contact"),
 } = Astro.props;
 ---
 

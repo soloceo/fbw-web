@@ -1,5 +1,6 @@
 ---
 import { FIRM, SEO_DEFAULT, OFFICES } from "~/data/firm";
+import { absoluteUrl, withBase } from "~/lib/url";
 
 export interface Props {
   title?: string;
@@ -20,42 +21,56 @@ const {
 } = Astro.props;
 
 const fullTitle = title ? `${title} — ${FIRM.name}` : SEO_DEFAULT.title;
-const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).toString();
 
-// Resolve og:image relative to the site's base path (so it works under
-// GitHub Pages subpath as well as a future custom domain).
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const ogImagePath = ogImage.startsWith("http")
-  ? ogImage
-  : `${base}/${ogImage.replace(/^\//, "")}`;
+// canonical / og:url — derive from the actual origin + path so the URL is
+// always accurate, whether we are on soloceo.github.io/fbw-web or a future
+// fbwlaw.ca. `Astro.url.pathname` already includes the base.
+const canonicalUrl =
+  canonical || new URL(Astro.url.pathname, Astro.site).toString();
+
+// og:image resolved as an absolute URL (external URLs pass through).
 const ogImageUrl = ogImage.startsWith("http")
   ? ogImage
-  : new URL(ogImagePath, Astro.site).toString();
+  : absoluteUrl(ogImage, Astro.site ?? new URL("http://localhost"));
 
-/* Base LegalService schema always included */
+// Use the actual deployed site origin + base as the firm's schema identity.
+// When we swap DNS to fbwlaw.ca, this updates automatically.
+const firmIdUrl = new URL(withBase("/"), Astro.site ?? new URL("http://localhost")).toString();
+const firmId = `${firmIdUrl}#legalservice`;
+
+// Phone in E.164 form per Google schema guidance.
+const telE164 = FIRM.mainPhone.replace(/[^\d+]/g, "");
+
+// Head office (Toronto) is the primary address; branch offices are
+// enumerated as `location` entries. One `address` per LegalService is the
+// schema.org norm.
+const head = OFFICES.find((o) => o.role === "Head Office") ?? OFFICES[0];
+
 const baseSchema: Record<string, unknown> = {
   "@context": "https://schema.org",
   "@type": "LegalService",
-  "@id": `${FIRM.website}#legalservice`,
+  "@id": firmId,
   name: FIRM.legalName,
   alternateName: FIRM.name,
   description: FIRM.shortDescription,
-  url: FIRM.website,
+  url: firmIdUrl,
   email: FIRM.email,
-  telephone: FIRM.mainPhone,
+  telephone: telE164,
   priceRange: "$$$",
-  areaServed: {
-    "@type": "AdministrativeArea",
-    name: "Ontario, Canada",
-  },
-  address: OFFICES.map((o) => ({
+  areaServed: [
+    { "@type": "AdministrativeArea", name: "Ontario" },
+    { "@type": "City", name: "Toronto" },
+    { "@type": "City", name: "Markham" },
+    { "@type": "City", name: "Oakville" },
+  ],
+  address: {
     "@type": "PostalAddress",
-    streetAddress: `${o.address1}${o.address2 ? ", " + o.address2 : ""}`,
-    addressLocality: o.city,
-    addressRegion: o.province,
-    postalCode: o.postal,
-    addressCountry: o.country,
-  })),
+    streetAddress: `${head.address1}${head.address2 ? ", " + head.address2 : ""}`,
+    addressLocality: head.city,
+    addressRegion: head.province,
+    postalCode: head.postal,
+    addressCountry: head.country,
+  },
   location: OFFICES.map((o) => ({
     "@type": "Place",
     name: `${FIRM.name} — ${o.name}`,

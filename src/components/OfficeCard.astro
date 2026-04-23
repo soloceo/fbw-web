@@ -13,11 +13,12 @@ export interface Props {
   featured?: boolean;
 }
 
+import { withBase } from "~/lib/url";
+
 const { slug, name, role, address1, address2, city, province, postal, phone, email, featured = false } =
   Astro.props;
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const href = `${base}/offices/${slug}`;
+const href = withBase(`/offices/${slug}`);
 const mapsQuery = encodeURIComponent(`${address1}${address2 ? ", " + address2 : ""}, ${city}, ${province} ${postal}`);
 ---
 
@@ -64,7 +65,7 @@ const mapsQuery = encodeURIComponent(`${address1}${address2 ? ", " + address2 : 
     <a
       href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`}
       target="_blank"
-      rel="noopener"
+      rel="noopener noreferrer"
       class="text-graphite-500 hover:text-gold-600"
     >
       Open in Maps ↗

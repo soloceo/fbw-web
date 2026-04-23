@@ -1,7 +1,6 @@
 ---
 import { FIRM } from "~/data/firm";
-
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+import { withBase } from "~/lib/url";
 ---
 
 <section class="relative overflow-hidden bg-ink-950 text-paper-50">
@@ -10,7 +9,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
        Establishes jurisdiction and public registry status before
        anything marketing-oriented is said. -->
   <div class="relative z-10 border-b border-ink-800/80">
-    <div class="container-editorial flex flex-wrap items-center justify-between gap-y-2 py-3.5 text-[10.5px] uppercase tracking-[0.28em] text-paper-200/55">
+    <div class="container-editorial flex flex-wrap items-center justify-between gap-y-2 py-3.5 text-[10.5px] uppercase tracking-[0.28em] text-paper-200/75">
       <span class="smallcaps" style="letter-spacing: 0.3em;">
         Freedman · Benipal · Wu&nbsp;LLP
       </span>
@@ -70,14 +69,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       <!-- Primary actions — no soft language -->
       <div class="mt-14 flex flex-col gap-5 sm:flex-row sm:items-center">
         <a
-          href={`${base}/practice-areas`}
+          href={withBase("/practice-areas")}
           class="group inline-flex items-center justify-center gap-3 border border-gold-500 bg-gold-500 px-8 py-4 text-[11px] uppercase tracking-[0.24em] text-ink-950 transition-colors hover:bg-gold-400 hover:border-gold-400"
         >
           Our Practice
           <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
         </a>
         <a
-          href={`${base}/people`}
+          href={withBase("/people")}
           class="group inline-flex items-center gap-3 px-2 text-[11px] uppercase tracking-[0.24em] text-paper-200/80 hover:text-gold-400"
         >
           <span>Meet the Partners</span>
