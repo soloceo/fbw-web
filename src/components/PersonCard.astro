@@ -1,0 +1,98 @@
+---
+export interface Props {
+  slug: string;
+  name: string;
+  title: string;
+  photo?: string;
+  email?: string;
+  phone?: string;
+  languages?: string[];
+  variant?: "feature" | "compact";
+}
+
+const {
+  slug,
+  name,
+  title,
+  photo,
+  email,
+  phone,
+  languages = [],
+  variant = "compact",
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const href = `${base}/people/${slug}`;
+const initials = name
+  .split(" ")
+  .filter(Boolean)
+  .map((n) => n[0])
+  .join("")
+  .slice(0, 2)
+  .toUpperCase();
+---
+
+<article class="group flex flex-col">
+  <a href={href} class="block overflow-hidden bg-paper-200">
+    {
+      photo ? (
+        <img
+          src={photo}
+          alt={name}
+          class="aspect-[3/4] w-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-[1.02]"
+          loading="lazy"
+        />
+      ) : (
+        <div class="flex aspect-[3/4] w-full items-center justify-center bg-gradient-to-br from-paper-200 to-paper-300">
+          <span class="font-display text-7xl text-graphite-300 transition-colors group-hover:text-gold-500">
+            {initials}
+          </span>
+        </div>
+      )
+    }
+  </a>
+
+  <div class="mt-5 flex flex-col">
+    <h3 class={variant === "feature" ? "font-display text-3xl" : "font-display text-xl"}>
+      <a href={href} class="transition-colors group-hover:text-gold-600">
+        {name}
+      </a>
+    </h3>
+    <p class="smallcaps mt-1 text-xs text-gold-600">{title}</p>
+
+    {
+      (email || phone) && (
+        <dl class="mt-4 space-y-1 border-t border-graphite-200 pt-3 text-sm text-graphite-700">
+          {phone && (
+            <div class="flex items-center gap-2">
+              <dt class="sr-only">Phone</dt>
+              <dd class="nums">
+                <a href={`tel:${phone.replace(/\s/g, "")}`} class="hover:text-gold-600">
+                  {phone}
+                </a>
+              </dd>
+            </div>
+          )}
+          {email && (
+            <div class="flex items-center gap-2">
+              <dt class="sr-only">Email</dt>
+              <dd>
+                <a href={`mailto:${email}`} class="link-underline hover:text-gold-600">
+                  {email}
+                </a>
+              </dd>
+            </div>
+          )}
+        </dl>
+      )
+    }
+
+    {
+      languages.length > 0 && (
+        <p class="mt-3 text-[11px] uppercase tracking-[0.14em] text-graphite-500">
+          {languages.join(" · ")}
+        </p>
+      )
+    }
+  </div>
+</article>

@@ -1,0 +1,68 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import InsightCard from "~/components/InsightCard.astro";
+import CTABanner from "~/components/CTABanner.astro";
+
+const insights = (await getCollection("insights", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+);
+
+const [featured, ...rest] = insights;
+---
+
+<BaseLayout
+  title="Insights"
+  description="Plain‑language articles, alerts, and commentary from the partners of FBW LLP."
+>
+  <section class="border-b border-graphite-200 bg-paper-50">
+    <div class="container-editorial pt-20 pb-20 md:pt-28 md:pb-24">
+      <SectionHeading
+        eyebrow="Insights"
+        title="Plain‑language guidance from our partners."
+        lede="Practical commentary on the legal questions we see most often — written for the business owners, buyers, employees, and families we serve."
+        as="h1"
+      />
+    </div>
+  </section>
+
+  {
+    featured && (
+      <section class="bg-paper-50">
+        <div class="container-editorial border-b border-graphite-200 pb-16 pt-8 md:pt-16">
+          <InsightCard
+            slug={featured.id}
+            title={featured.data.title}
+            summary={featured.data.summary}
+            category={featured.data.category}
+            publishedAt={featured.data.publishedAt}
+            author={featured.data.author}
+            featured
+          />
+        </div>
+      </section>
+    )
+  }
+
+  <section class="bg-paper-50">
+    <div class="container-editorial py-16 md:py-24">
+      <div class="grid grid-cols-1 gap-x-12 md:grid-cols-2 lg:grid-cols-3">
+        {
+          rest.map((article) => (
+            <InsightCard
+              slug={article.id}
+              title={article.data.title}
+              summary={article.data.summary}
+              category={article.data.category}
+              publishedAt={article.data.publishedAt}
+              author={article.data.author}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CTABanner />
+</BaseLayout>

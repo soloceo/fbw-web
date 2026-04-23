@@ -1,0 +1,91 @@
+---
+import { FIRM } from "~/data/firm";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<section class="relative overflow-hidden bg-ink-950 text-paper-50">
+  <!-- Decorative grid backdrop -->
+  <div
+    class="pointer-events-none absolute inset-0 opacity-[0.035]"
+    style="background-image: linear-gradient(var(--color-paper-50) 1px, transparent 1px), linear-gradient(90deg, var(--color-paper-50) 1px, transparent 1px); background-size: 80px 80px;"
+    aria-hidden="true"
+  >
+  </div>
+
+  <!-- Top rule + eyebrow bar -->
+  <div class="relative border-b border-ink-800">
+    <div class="container-editorial flex items-center justify-between py-4 text-[11px] uppercase tracking-[0.24em] text-paper-200/60">
+      <span>Freedman · Benipal · Wu</span>
+      <span class="hidden md:inline">Ontario · Canada · Est. {FIRM.yearFounded}</span>
+      <span class="nums">{FIRM.mainPhone}</span>
+    </div>
+  </div>
+
+  <div class="container-editorial relative grid min-h-[85vh] grid-cols-1 items-end py-20 md:min-h-[90vh] md:py-28 lg:grid-cols-12 lg:gap-12 lg:py-32">
+    <div class="reveal lg:col-span-9">
+      <span class="eyebrow" style="color: var(--color-gold-400);">
+        Counsel for the Greater Toronto Area
+      </span>
+
+      <h1 class="mt-8 font-display font-normal leading-[0.98] tracking-[-0.02em] text-paper-50">
+        <span class="block text-[clamp(2.75rem,8vw,6.25rem)]">A firm built on</span>
+        <span
+          class="block bg-gradient-to-r from-gold-600 via-gold-400 to-gold-500 bg-clip-text text-[clamp(2.75rem,8vw,6.25rem)] italic text-transparent"
+        >
+          listening first.
+        </span>
+      </h1>
+
+      <p class="mt-10 max-w-2xl text-lg leading-relaxed text-paper-200/80 md:text-xl">
+        FBW LLP brings together three founding partners whose practices span
+        real&nbsp;estate, corporate, immigration, and private client matters —
+        delivering counsel that is rigorous, unhurried, and distinctly personal.
+      </p>
+
+      <div class="mt-12 flex flex-col gap-5 sm:flex-row sm:items-center">
+        <a
+          href={`${base}/practice-areas`}
+          class="inline-flex items-center justify-center gap-3 border border-gold-500 bg-gold-500 px-8 py-4 text-xs uppercase tracking-[0.22em] text-ink-950 transition-colors hover:bg-gold-400 hover:border-gold-400"
+        >
+          Explore our work
+          <span aria-hidden="true">→</span>
+        </a>
+        <a
+          href={`${base}/contact`}
+          class="inline-flex items-center gap-3 px-2 text-sm uppercase tracking-[0.22em] text-paper-200/80 hover:text-gold-400"
+        >
+          <span>Request consultation</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="reveal hidden lg:col-span-3 lg:flex lg:flex-col lg:justify-end lg:gap-6 lg:border-l lg:border-ink-800 lg:pl-8">
+      <div>
+        <p class="smallcaps text-xs text-gold-400">Offices</p>
+        <ul class="mt-2 space-y-1 text-paper-200/80">
+          <li>Toronto</li>
+          <li>Markham</li>
+          <li>Oakville</li>
+        </ul>
+      </div>
+      <div>
+        <p class="smallcaps text-xs text-gold-400">Jurisdiction</p>
+        <p class="mt-2 text-paper-200/80">Ontario, Canada</p>
+      </div>
+      <div>
+        <p class="smallcaps text-xs text-gold-400">Languages</p>
+        <p class="mt-2 text-paper-200/80">English · Mandarin · Punjabi</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom gold rule -->
+  <div
+    class="h-[2px]"
+    style="background: linear-gradient(90deg, var(--color-gold-600), var(--color-gold-400) 50%, var(--color-gold-500));"
+    aria-hidden="true"
+  >
+  </div>
+</section>

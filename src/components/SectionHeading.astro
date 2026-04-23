@@ -1,0 +1,63 @@
+---
+export interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  align?: "left" | "center";
+  tone?: "paper" | "ink";
+  as?: "h1" | "h2" | "h3";
+  class?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  lede,
+  align = "left",
+  tone = "paper",
+  as: Tag = "h2",
+  class: className = "",
+} = Astro.props;
+
+const isInk = tone === "ink";
+---
+
+<div
+  class:list={[
+    "reveal",
+    align === "center" && "mx-auto max-w-3xl text-center",
+    className,
+  ]}
+>
+  {
+    eyebrow && (
+      <span class="eyebrow" style={isInk ? "color: var(--color-gold-400);" : undefined}>
+        {eyebrow}
+      </span>
+    )
+  }
+
+  <Tag
+    class:list={[
+      "mt-5 font-display",
+      Tag === "h1" ? "text-5xl md:text-6xl lg:text-7xl" : "text-3xl md:text-4xl lg:text-5xl",
+      isInk ? "text-paper-50" : "text-ink-900",
+    ]}
+  >
+    <slot name="title">{title}</slot>
+  </Tag>
+
+  {
+    lede && (
+      <p
+        class:list={[
+          "mt-6 max-w-2xl text-lg leading-relaxed",
+          align === "center" && "mx-auto",
+          isInk ? "text-paper-200/80" : "text-graphite-700",
+        ]}
+      >
+        {lede}
+      </p>
+    )
+  }
+</div>

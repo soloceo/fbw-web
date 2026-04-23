@@ -1,0 +1,49 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import OfficeCard from "~/components/OfficeCard.astro";
+import CTABanner from "~/components/CTABanner.astro";
+import { OFFICES } from "~/data/firm";
+---
+
+<BaseLayout
+  title="Offices"
+  description="FBW LLP offices in Toronto, Markham, and Oakville — serving the Greater Toronto Area."
+>
+  <section class="border-b border-graphite-200 bg-paper-50">
+    <div class="container-editorial pt-20 pb-24 md:pt-28 md:pb-28">
+      <SectionHeading
+        eyebrow="Offices"
+        title="Three offices. One firm. Serving the entire GTA."
+        lede="From our head office in downtown Toronto to our branches in Markham and Oakville, we meet clients where they live and do business — and coordinate seamlessly across all three."
+        as="h1"
+      />
+    </div>
+  </section>
+
+  <section class="bg-paper-100">
+    <div class="container-editorial py-20 md:py-28">
+      <div class="grid grid-cols-1 gap-14 lg:grid-cols-3 lg:gap-10">
+        {
+          OFFICES.map((office) => (
+            <OfficeCard
+              slug={office.slug}
+              name={office.name}
+              role={office.role}
+              address1={office.address1}
+              address2={office.address2}
+              city={office.city}
+              province={office.province}
+              postal={office.postal}
+              phone={office.phone}
+              email={office.email}
+              featured={office.role === "Head Office"}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CTABanner />
+</BaseLayout>

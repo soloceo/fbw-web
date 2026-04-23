@@ -1,0 +1,188 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import { FIRM, OFFICES } from "~/data/firm";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<BaseLayout
+  title="Contact"
+  description="Contact FBW LLP — Toronto, Markham, and Oakville offices. Request a consultation."
+>
+  <section class="border-b border-graphite-200 bg-paper-50">
+    <div class="container-editorial pt-20 pb-16 md:pt-28 md:pb-20">
+      <SectionHeading
+        eyebrow="Contact"
+        title="Every matter begins with listening."
+        lede="Tell us what you are working through. A member of our team will respond within one business day, and — where appropriate — arrange an initial consultation with the right partner for your situation."
+        as="h1"
+      />
+    </div>
+  </section>
+
+  <section class="bg-paper-50">
+    <div class="container-editorial grid grid-cols-1 gap-12 py-20 md:py-24 lg:grid-cols-12 lg:gap-16">
+      <!-- Form -->
+      <div class="lg:col-span-7">
+        <h2 class="font-display text-3xl text-ink-900 md:text-4xl">Request a consultation</h2>
+        <p class="mt-3 text-graphite-700">
+          Fields marked with <span class="text-gold-600">*</span> are required. Everything you share
+          is treated as confidential, but please do not send confidential
+          information about a matter until we have confirmed we are able to
+          act for you.
+        </p>
+
+        <form
+          action={`mailto:${FIRM.email}`}
+          method="post"
+          enctype="text/plain"
+          class="mt-10 grid grid-cols-1 gap-6"
+        >
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <label class="flex flex-col gap-2 text-sm">
+              <span class="smallcaps text-xs text-graphite-500">
+                Full name <span class="text-gold-600">*</span>
+              </span>
+              <input
+                required
+                name="name"
+                type="text"
+                autocomplete="name"
+                class="border-0 border-b border-graphite-300 bg-transparent py-2.5 text-base text-ink-900 outline-none focus:border-gold-500"
+              />
+            </label>
+            <label class="flex flex-col gap-2 text-sm">
+              <span class="smallcaps text-xs text-graphite-500">
+                Email <span class="text-gold-600">*</span>
+              </span>
+              <input
+                required
+                name="email"
+                type="email"
+                autocomplete="email"
+                class="border-0 border-b border-graphite-300 bg-transparent py-2.5 text-base text-ink-900 outline-none focus:border-gold-500"
+              />
+            </label>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <label class="flex flex-col gap-2 text-sm">
+              <span class="smallcaps text-xs text-graphite-500">Phone</span>
+              <input
+                name="phone"
+                type="tel"
+                autocomplete="tel"
+                class="nums border-0 border-b border-graphite-300 bg-transparent py-2.5 text-base text-ink-900 outline-none focus:border-gold-500"
+              />
+            </label>
+            <label class="flex flex-col gap-2 text-sm">
+              <span class="smallcaps text-xs text-graphite-500">Preferred office</span>
+              <select
+                name="office"
+                class="appearance-none border-0 border-b border-graphite-300 bg-transparent py-2.5 text-base text-ink-900 outline-none focus:border-gold-500"
+              >
+                <option value="">No preference</option>
+                {OFFICES.map((o) => (
+                  <option value={o.name}>{o.name}{o.role === "Head Office" ? " (Head Office)" : ""}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <label class="flex flex-col gap-2 text-sm">
+            <span class="smallcaps text-xs text-graphite-500">Area of law</span>
+            <select
+              name="practice"
+              class="appearance-none border-0 border-b border-graphite-300 bg-transparent py-2.5 text-base text-ink-900 outline-none focus:border-gold-500"
+            >
+              <option value="">Not sure yet</option>
+              <option>Real Estate</option>
+              <option>Corporate & Commercial</option>
+              <option>Commercial Litigation</option>
+              <option>Wills & Estates</option>
+              <option>Immigration</option>
+              <option>Family</option>
+              <option>Employment</option>
+              <option>Tax</option>
+            </select>
+          </label>
+
+          <label class="flex flex-col gap-2 text-sm">
+            <span class="smallcaps text-xs text-graphite-500">
+              How can we help? <span class="text-gold-600">*</span>
+            </span>
+            <textarea
+              required
+              name="message"
+              rows="6"
+              class="border border-graphite-300 bg-transparent px-4 py-3 text-base text-ink-900 outline-none focus:border-gold-500"
+            ></textarea>
+          </label>
+
+          <label class="flex items-start gap-3 text-xs leading-relaxed text-graphite-500">
+            <input
+              type="checkbox"
+              required
+              name="consent"
+              class="mt-1 h-4 w-4 accent-gold-500"
+            />
+            <span>
+              I understand that submitting this form does not create a
+              solicitor–client relationship and that I should not send
+              confidential information until a conflict check has been
+              completed.
+            </span>
+          </label>
+
+          <div class="mt-2">
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center gap-3 border border-ink-900 bg-ink-900 px-8 py-4 text-xs uppercase tracking-[0.22em] text-paper-50 transition-colors hover:bg-gold-500 hover:border-gold-500 hover:text-ink-950"
+            >
+              Submit enquiry <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Side info -->
+      <aside class="space-y-10 lg:col-span-5">
+        <div class="border-t border-graphite-300 pt-6">
+          <h3 class="eyebrow">General</h3>
+          <ul class="mt-4 space-y-2 text-[15px]">
+            <li class="nums">
+              <a href={`tel:${FIRM.mainPhone.replace(/\s/g, "")}`} class="hover:text-gold-600">
+                {FIRM.mainPhone}
+              </a>
+            </li>
+            <li>
+              <a href={`mailto:${FIRM.email}`} class="link-underline hover:text-gold-600">
+                {FIRM.email}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        {
+          OFFICES.map((office) => (
+            <div class="border-t border-graphite-300 pt-6">
+              <h3 class="eyebrow">{office.name}{office.role === "Head Office" && " · Head Office"}</h3>
+              <address class="mt-3 not-italic text-[15px] leading-relaxed text-graphite-700">
+                {office.address1}<br />
+                {office.address2 && <>{office.address2}<br /></>}
+                {office.city}, {office.province} {office.postal}
+              </address>
+              <a
+                href={`${base}/offices/${office.slug}`}
+                class="mt-3 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-ink-900 hover:text-gold-600"
+              >
+                Office details <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          ))
+        }
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

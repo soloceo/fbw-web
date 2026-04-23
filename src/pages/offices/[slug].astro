@@ -1,0 +1,153 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import CTABanner from "~/components/CTABanner.astro";
+import PersonCard from "~/components/PersonCard.astro";
+import { OFFICES, FIRM } from "~/data/firm";
+
+export async function getStaticPaths() {
+  return OFFICES.map((office) => ({
+    params: { slug: office.slug },
+    props: { office },
+  }));
+}
+
+const { office } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const fullAddress = `${office.address1}${office.address2 ? ", " + office.address2 : ""}, ${office.city}, ${office.province} ${office.postal}`;
+const mapsEmbed = `https://www.google.com/maps?q=${encodeURIComponent(fullAddress)}&output=embed`;
+const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
+
+const allPeople = await getCollection("people", ({ data }) => !data.draft);
+const officePeople = allPeople
+  .filter((p) => p.data.offices.includes(office.slug))
+  .sort((a, b) => a.data.order - b.data.order);
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "LegalService",
+  name: `${FIRM.name} — ${office.name}`,
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
+  telephone: office.phone,
+  email: office.email,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: `${office.address1}${office.address2 ? ", " + office.address2 : ""}`,
+    addressLocality: office.city,
+    addressRegion: office.province,
+    postalCode: office.postal,
+    addressCountry: office.country,
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: office.lat,
+    longitude: office.lng,
+  },
+};
+---
+
+<BaseLayout
+  title={`${office.name} Office`}
+  description={`FBW LLP ${office.name} office at ${office.address1}, ${office.city}.`}
+  schema={schema}
+>
+  <section class="border-b border-graphite-200 bg-paper-50">
+    <div class="container-editorial pt-16 pb-16 md:pt-20 md:pb-16">
+      <nav aria-label="Breadcrumb" class="mb-8 text-xs uppercase tracking-[0.2em] text-graphite-500">
+        <a href={`${base}/offices`} class="link-underline hover:text-gold-600">Offices</a>
+        <span class="mx-2">/</span>
+        <span class="text-graphite-700">{office.name}</span>
+      </nav>
+
+      <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-6">
+          <span class="eyebrow">{office.role}</span>
+          <h1 class="mt-5 font-display text-5xl leading-[1.02] text-ink-900 md:text-6xl lg:text-7xl">
+            {office.name}
+          </h1>
+          <address class="mt-8 max-w-md not-italic text-lg leading-relaxed text-graphite-700">
+            {office.address1}<br />
+            {office.address2 && <>{office.address2}<br /></>}
+            {office.city}, {office.province} {office.postal}<br />
+            {office.country === "CA" ? "Canada" : office.country}
+          </address>
+
+          <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-graphite-200 pt-8 text-sm">
+            <div>
+              <dt class="smallcaps text-xs text-graphite-500">Telephone</dt>
+              <dd class="nums mt-1">
+                <a href={`tel:${office.phone.replace(/\s/g, "")}`} class="hover:text-gold-600">
+                  {office.phone}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt class="smallcaps text-xs text-graphite-500">Email</dt>
+              <dd class="mt-1">
+                <a href={`mailto:${office.email}`} class="link-underline hover:text-gold-600">
+                  {office.email}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt class="smallcaps text-xs text-graphite-500">Hours</dt>
+              <dd class="mt-1">{office.hours}</dd>
+            </div>
+          </dl>
+
+          <div class="mt-8">
+            <a
+              href={mapsLink}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-3 text-xs uppercase tracking-[0.22em] text-ink-900 hover:text-gold-600"
+            >
+              Open in Google Maps <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6">
+          <div class="aspect-square w-full overflow-hidden border border-graphite-200 bg-paper-100">
+            <iframe
+              src={mapsEmbed}
+              width="100%"
+              height="100%"
+              style="border:0"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title={`Map of FBW LLP ${office.name} office`}
+              class="grayscale transition-all hover:grayscale-0"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {
+    officePeople.length > 0 && (
+      <section class="bg-paper-50">
+        <div class="container-editorial py-20 md:py-28">
+          <h2 class="eyebrow">Based at this office</h2>
+          <div class="mt-8 grid grid-cols-2 gap-8 md:grid-cols-3 md:gap-10">
+            {officePeople.map((person) => (
+              <PersonCard
+                slug={person.id}
+                name={person.data.name}
+                title={person.data.title}
+                photo={person.data.photo}
+                email={person.data.email}
+                phone={person.data.phone}
+                languages={person.data.languages}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <CTABanner />
+</BaseLayout>

@@ -1,0 +1,48 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import PracticeCard from "~/components/PracticeCard.astro";
+import CTABanner from "~/components/CTABanner.astro";
+
+const practices = (await getCollection("practices", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<BaseLayout
+  title="Practice Areas"
+  description="FBW LLP practice areas — real estate, corporate, commercial litigation, wills and estates, immigration, family, employment, and tax."
+>
+  <!-- Page hero -->
+  <section class="border-b border-graphite-200 bg-paper-50">
+    <div class="container-editorial pt-20 pb-24 md:pt-28 md:pb-32">
+      <SectionHeading
+        eyebrow="Practice Areas"
+        title="Focused counsel across the questions that matter to our clients."
+        lede="We maintain deliberate focus in the practice areas below. Where a matter requires expertise we do not hold internally, we refer clients openly to trusted outside counsel — and coordinate across the file."
+        as="h1"
+      />
+    </div>
+  </section>
+
+  <!-- Practice list -->
+  <section class="bg-paper-100">
+    <div class="container-editorial py-20 md:py-28">
+      <div class="grid grid-cols-1 gap-x-12 md:grid-cols-2">
+        {
+          practices.map((practice, i) => (
+            <PracticeCard
+              slug={practice.id}
+              title={practice.data.title}
+              summary={practice.data.summary}
+              index={i}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CTABanner />
+</BaseLayout>

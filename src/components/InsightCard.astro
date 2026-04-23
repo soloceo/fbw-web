@@ -1,0 +1,64 @@
+---
+export interface Props {
+  slug: string;
+  title: string;
+  summary: string;
+  category: string;
+  publishedAt: Date;
+  author: string;
+  featured?: boolean;
+}
+
+const { slug, title, summary, category, publishedAt, author, featured = false } = Astro.props;
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const href = `${base}/insights/${slug}`;
+
+const categoryLabel: Record<string, string> = {
+  article: "Article",
+  alert: "Client Alert",
+  news: "Firm News",
+  "case-study": "Case Study",
+};
+
+const dateStr = publishedAt.toLocaleDateString("en-CA", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<article
+  class:list={[
+    "group flex flex-col border-t border-graphite-300/70 py-8 transition-colors hover:border-gold-500",
+    featured && "lg:col-span-2",
+  ]}
+>
+  <div class="flex items-center gap-3 text-[11px] uppercase tracking-[0.16em] text-gold-600">
+    <time datetime={publishedAt.toISOString()} class="nums">
+      {dateStr}
+    </time>
+    <span class="text-graphite-300">·</span>
+    <span class="smallcaps text-graphite-500">{categoryLabel[category] ?? category}</span>
+  </div>
+
+  <h3
+    class:list={[
+      "mt-4 font-display transition-colors group-hover:text-gold-600",
+      featured ? "text-3xl lg:text-4xl" : "text-2xl",
+    ]}
+  >
+    <a href={href} class="link-underline">{title}</a>
+  </h3>
+
+  <p class="mt-4 max-w-xl text-[15px] leading-relaxed text-graphite-700">
+    {summary}
+  </p>
+
+  <div class="mt-6 flex items-center justify-between text-sm">
+    <span class="text-graphite-500">By <span class="text-graphite-700">{author}</span></span>
+    <a href={href} class="text-xs uppercase tracking-[0.18em] text-ink-900 hover:text-gold-600">
+      Read →
+    </a>
+  </div>
+</article>

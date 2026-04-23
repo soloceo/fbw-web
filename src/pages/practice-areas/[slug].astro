@@ -1,0 +1,136 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import CTABanner from "~/components/CTABanner.astro";
+
+export async function getStaticPaths() {
+  const practices = await getCollection("practices", ({ data }) => !data.draft);
+  return practices.map((practice) => ({
+    params: { slug: practice.id },
+    props: { practice },
+  }));
+}
+
+const { practice } = Astro.props;
+const { Content } = await render(practice);
+
+const allPeople = await getCollection("people", ({ data }) => !data.draft);
+const relatedPeople = allPeople.filter((p) => p.data.practices.includes(practice.id));
+
+const leadPartner = practice.data.leadPartner
+  ? await getEntry("people", practice.data.leadPartner)
+  : undefined;
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+/* LegalService schema for this specific practice */
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "LegalService",
+  name: `${practice.data.title} — FBW LLP`,
+  description: practice.data.summary,
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
+  provider: { "@id": "https://fbwlaw.ca#legalservice" },
+  serviceType: practice.data.title,
+  areaServed: { "@type": "AdministrativeArea", name: "Ontario, Canada" },
+};
+---
+
+<BaseLayout
+  title={practice.data.title}
+  description={practice.data.summary}
+  schema={schema}
+>
+  <!-- Breadcrumb + title hero -->
+  <section class="border-b border-graphite-200 bg-paper-50">
+    <div class="container-editorial pt-16 pb-20 md:pt-24 md:pb-24">
+      <nav aria-label="Breadcrumb" class="mb-8 text-xs uppercase tracking-[0.2em] text-graphite-500">
+        <a href={`${base}/practice-areas`} class="link-underline hover:text-gold-600">
+          Practice Areas
+        </a>
+        <span class="mx-2">/</span>
+        <span class="text-graphite-700">{practice.data.shortTitle ?? practice.data.title}</span>
+      </nav>
+
+      <span class="eyebrow">Practice Area</span>
+      <h1 class="mt-5 font-display text-5xl leading-[1.02] tracking-[-0.015em] text-ink-900 md:text-6xl lg:text-7xl">
+        {practice.data.title}
+      </h1>
+      <p class="mt-8 max-w-2xl text-lg leading-relaxed text-graphite-700 md:text-xl">
+        {practice.data.summary}
+      </p>
+    </div>
+  </section>
+
+  <!-- Body -->
+  <section class="bg-paper-50">
+    <div class="container-editorial grid grid-cols-1 gap-12 py-20 md:py-28 lg:grid-cols-12 lg:gap-16">
+      <article class="prose prose-lg max-w-none lg:col-span-8 [&_h2]:font-display [&_h2]:text-3xl [&_h2]:mt-12 [&_h2]:mb-4 [&_h2]:text-ink-900 [&_h3]:font-display [&_h3]:text-2xl [&_p]:text-graphite-700 [&_p]:leading-relaxed [&_a]:text-gold-600 [&_blockquote]:border-l-2 [&_blockquote]:border-gold-500 [&_blockquote]:pl-6 [&_blockquote]:italic">
+        <Content />
+      </article>
+
+      <aside class="space-y-10 lg:col-span-4">
+        {
+          practice.data.keyServices.length > 0 && (
+            <div class="border-t border-graphite-300 pt-6">
+              <h3 class="eyebrow">Key services</h3>
+              <ul class="mt-4 space-y-2 text-[15px] text-graphite-700">
+                {practice.data.keyServices.map((s) => (
+                  <li class="flex gap-3">
+                    <span class="mt-2 h-px w-3 flex-shrink-0 bg-gold-500" aria-hidden="true" />
+                    <span>{s}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        {
+          leadPartner && (
+            <div class="border-t border-graphite-300 pt-6">
+              <h3 class="eyebrow">Lead partner</h3>
+              <a
+                href={`${base}/people/${leadPartner.id}`}
+                class="mt-5 block"
+              >
+                <p class="font-display text-2xl text-ink-900 transition-colors hover:text-gold-600">
+                  {leadPartner.data.name}
+                </p>
+                <p class="smallcaps mt-1 text-xs text-gold-600">{leadPartner.data.title}</p>
+              </a>
+            </div>
+          )
+        }
+
+        {
+          relatedPeople.length > 0 && (
+            <div class="border-t border-graphite-300 pt-6">
+              <h3 class="eyebrow">Our team in this area</h3>
+              <ul class="mt-5 space-y-4">
+                {relatedPeople.map((person) => (
+                  <li>
+                    <a
+                      href={`${base}/people/${person.id}`}
+                      class="group block"
+                    >
+                      <p class="font-display text-lg text-ink-900 transition-colors group-hover:text-gold-600">
+                        {person.data.name}
+                      </p>
+                      <p class="smallcaps text-[11px] text-graphite-500">{person.data.title}</p>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </aside>
+    </div>
+  </section>
+
+  <CTABanner
+    eyebrow={`Discuss a ${practice.data.shortTitle ?? practice.data.title} matter`}
+    title="Bring us the facts. We will tell you what we see."
+  />
+</BaseLayout>

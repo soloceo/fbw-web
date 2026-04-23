@@ -1,0 +1,42 @@
+# Build output
+dist/
+.astro/
+.output/
+.vercel/
+.netlify/
+.wrangler/
+
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Brand source materials (kept locally for team reference, not deployed)
+/FBW Logo/
+/Business Card Design.pdf
+/*.af
+/*.afpub
+/*~lock*
+
+# Google Drive conflict files
+*conflict*

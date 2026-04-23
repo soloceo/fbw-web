@@ -1,0 +1,104 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import PersonCard from "~/components/PersonCard.astro";
+import CTABanner from "~/components/CTABanner.astro";
+
+const people = (await getCollection("people", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const founders = people.filter((p) => p.data.role === "founding-partner");
+const managing = people.filter((p) => p.data.role === "managing-partner");
+const others = people.filter(
+  (p) => !["founding-partner", "managing-partner"].includes(p.data.role),
+);
+---
+
+<BaseLayout
+  title="Our People"
+  description="Meet the partners and team of FBW LLP — Freedman, Benipal, Wu."
+>
+  <section class="border-b border-graphite-200 bg-paper-50">
+    <div class="container-editorial pt-20 pb-24 md:pt-28 md:pb-28">
+      <SectionHeading
+        eyebrow="Our People"
+        title="A partnership, in the original sense of the word."
+        lede="Every engagement at FBW LLP is led by a partner — identified by name on the engagement letter, reachable by phone, and accountable for the file from opening to close."
+        as="h1"
+      />
+    </div>
+  </section>
+
+  <!-- Founding partners -->
+  <section class="bg-paper-50">
+    <div class="container-editorial py-20 md:py-28">
+      <h2 class="eyebrow">Founding Partners</h2>
+      <div class="mt-8 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
+        {
+          founders.map((person) => (
+            <PersonCard
+              slug={person.id}
+              name={person.data.name}
+              title={person.data.title}
+              photo={person.data.photo}
+              email={person.data.email}
+              phone={person.data.phone}
+              languages={person.data.languages}
+              variant="feature"
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    managing.length > 0 && (
+      <section class="bg-paper-100">
+        <div class="container-editorial py-20 md:py-24">
+          <h2 class="eyebrow">Managing Partner</h2>
+          <div class="mt-8 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
+            {managing.map((person) => (
+              <PersonCard
+                slug={person.id}
+                name={person.data.name}
+                title={person.data.title}
+                photo={person.data.photo}
+                email={person.data.email}
+                phone={person.data.phone}
+                languages={person.data.languages}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    others.length > 0 && (
+      <section class="bg-paper-50">
+        <div class="container-editorial py-20 md:py-24">
+          <h2 class="eyebrow">Team</h2>
+          <div class="mt-8 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
+            {others.map((person) => (
+              <PersonCard
+                slug={person.id}
+                name={person.data.name}
+                title={person.data.title}
+                photo={person.data.photo}
+                email={person.data.email}
+                phone={person.data.phone}
+                languages={person.data.languages}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <CTABanner />
+</BaseLayout>

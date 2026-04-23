@@ -1,0 +1,102 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import CTABanner from "~/components/CTABanner.astro";
+import { FIRM } from "~/data/firm";
+
+export async function getStaticPaths() {
+  const insights = await getCollection("insights", ({ data }) => !data.draft);
+  return insights.map((article) => ({
+    params: { slug: article.id },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const dateStr = article.data.publishedAt.toLocaleDateString("en-CA", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: article.data.title,
+  description: article.data.summary,
+  datePublished: article.data.publishedAt.toISOString(),
+  author: { "@type": "Person", name: article.data.author },
+  publisher: {
+    "@type": "LegalService",
+    name: FIRM.legalName,
+    url: FIRM.website,
+  },
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
+};
+
+const categoryLabel: Record<string, string> = {
+  article: "Article",
+  alert: "Client Alert",
+  news: "Firm News",
+  "case-study": "Case Study",
+};
+---
+
+<BaseLayout
+  title={article.data.title}
+  description={article.data.summary}
+  schema={schema}
+>
+  <section class="border-b border-graphite-200 bg-paper-50">
+    <div class="container-reading pt-16 pb-12 md:pt-20">
+      <nav aria-label="Breadcrumb" class="mb-8 text-xs uppercase tracking-[0.2em] text-graphite-500">
+        <a href={`${base}/insights`} class="link-underline hover:text-gold-600">Insights</a>
+        <span class="mx-2">/</span>
+        <span class="text-graphite-700">{categoryLabel[article.data.category]}</span>
+      </nav>
+
+      <div class="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-gold-600">
+        <time datetime={article.data.publishedAt.toISOString()} class="nums">{dateStr}</time>
+        <span class="text-graphite-300">·</span>
+        <span>{categoryLabel[article.data.category]}</span>
+      </div>
+
+      <h1 class="mt-6 font-display text-4xl leading-[1.08] text-ink-900 md:text-5xl lg:text-6xl">
+        {article.data.title}
+      </h1>
+
+      <p class="mt-8 text-lg leading-relaxed text-graphite-700 md:text-xl">
+        {article.data.summary}
+      </p>
+
+      <p class="mt-8 text-sm text-graphite-500">
+        By <span class="text-graphite-900">{article.data.author}</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="bg-paper-50">
+    <div class="container-reading py-16 md:py-20">
+      <article class="prose prose-lg max-w-none [&_h2]:font-display [&_h2]:text-3xl [&_h2]:mt-12 [&_h2]:mb-5 [&_h2]:text-ink-900 [&_h3]:font-display [&_h3]:text-2xl [&_p]:text-graphite-700 [&_p]:leading-relaxed [&_a]:text-gold-600 [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-gold-500 [&_blockquote]:pl-6 [&_blockquote]:italic [&_blockquote]:text-graphite-500">
+        <Content />
+      </article>
+
+      <hr class="gold-rule my-16" />
+
+      <p class="text-sm leading-relaxed text-graphite-500">
+        The information on this page is provided for general interest only
+        and does not constitute legal advice. Every matter is unique. For
+        advice on your specific circumstances, please contact the firm.
+      </p>
+    </div>
+  </section>
+
+  <CTABanner
+    eyebrow={`Discuss this article`}
+    title="Every legal question starts with the facts."
+  />
+</BaseLayout>

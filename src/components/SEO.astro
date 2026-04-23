@@ -1,0 +1,96 @@
+---
+import { FIRM, SEO_DEFAULT, OFFICES } from "~/data/firm";
+
+export interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  canonical?: string;
+  schema?: Record<string, unknown> | Array<Record<string, unknown>>;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = SEO_DEFAULT.description,
+  ogImage = SEO_DEFAULT.ogImage,
+  canonical,
+  schema,
+  noindex = false,
+} = Astro.props;
+
+const fullTitle = title ? `${title} — ${FIRM.name}` : SEO_DEFAULT.title;
+const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).toString();
+
+/* Base LegalService schema always included */
+const baseSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "LegalService",
+  "@id": `${FIRM.website}#legalservice`,
+  name: FIRM.legalName,
+  alternateName: FIRM.name,
+  description: FIRM.shortDescription,
+  url: FIRM.website,
+  email: FIRM.email,
+  telephone: FIRM.mainPhone,
+  priceRange: "$$$",
+  areaServed: {
+    "@type": "AdministrativeArea",
+    name: "Ontario, Canada",
+  },
+  address: OFFICES.map((o) => ({
+    "@type": "PostalAddress",
+    streetAddress: `${o.address1}${o.address2 ? ", " + o.address2 : ""}`,
+    addressLocality: o.city,
+    addressRegion: o.province,
+    postalCode: o.postal,
+    addressCountry: o.country,
+  })),
+  location: OFFICES.map((o) => ({
+    "@type": "Place",
+    name: `${FIRM.name} — ${o.name}`,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: `${o.address1}${o.address2 ? ", " + o.address2 : ""}`,
+      addressLocality: o.city,
+      addressRegion: o.province,
+      postalCode: o.postal,
+      addressCountry: o.country,
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: o.lat,
+      longitude: o.lng,
+    },
+  })),
+};
+
+const structuredData = schema
+  ? Array.isArray(schema)
+    ? [baseSchema, ...schema]
+    : [baseSchema, schema]
+  : baseSchema;
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:site_name" content={FIRM.name} />
+<meta property="og:locale" content={SEO_DEFAULT.locale} />
+<meta property="og:image" content={new URL(ogImage, Astro.site).toString()} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={new URL(ogImage, Astro.site).toString()} />
+
+<!-- Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} is:inline />

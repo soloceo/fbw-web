@@ -1,0 +1,73 @@
+---
+export interface Props {
+  slug: string;
+  name: string;
+  role: string;
+  address1: string;
+  address2?: string;
+  city: string;
+  province: string;
+  postal: string;
+  phone: string;
+  email: string;
+  featured?: boolean;
+}
+
+const { slug, name, role, address1, address2, city, province, postal, phone, email, featured = false } =
+  Astro.props;
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const href = `${base}/offices/${slug}`;
+const mapsQuery = encodeURIComponent(`${address1}${address2 ? ", " + address2 : ""}, ${city}, ${province} ${postal}`);
+---
+
+<article
+  class:list={[
+    "flex flex-col border-t pt-8 lg:pt-10",
+    featured ? "border-gold-500" : "border-graphite-300/70",
+  ]}
+>
+  <div class="flex items-baseline justify-between">
+    <span class="smallcaps text-xs text-gold-600">{role}</span>
+    {featured && <span class="chapter-marker">·&nbsp;Head Office</span>}
+  </div>
+
+  <h3 class="mt-3 font-display text-3xl text-ink-900 md:text-4xl">
+    <a href={href} class="link-underline hover:text-gold-600">{name}</a>
+  </h3>
+
+  <address class="mt-5 not-italic text-[15px] leading-relaxed text-graphite-700">
+    {address1}<br />
+    {address2 && (<>{address2}<br /></>)}
+    {city}, {province} {postal}
+  </address>
+
+  <dl class="mt-5 space-y-1.5 text-sm">
+    <div class="flex gap-2">
+      <dt class="w-12 text-graphite-500">Tel</dt>
+      <dd class="nums text-graphite-900">
+        <a href={`tel:${phone.replace(/\s/g, "")}`} class="hover:text-gold-600">{phone}</a>
+      </dd>
+    </div>
+    <div class="flex gap-2">
+      <dt class="w-12 text-graphite-500">Email</dt>
+      <dd class="text-graphite-900">
+        <a href={`mailto:${email}`} class="link-underline hover:text-gold-600">{email}</a>
+      </dd>
+    </div>
+  </dl>
+
+  <div class="mt-6 flex flex-wrap items-center gap-5 text-xs uppercase tracking-[0.16em]">
+    <a href={href} class="text-ink-900 hover:text-gold-600">
+      Office details →
+    </a>
+    <a
+      href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`}
+      target="_blank"
+      rel="noopener"
+      class="text-graphite-500 hover:text-gold-600"
+    >
+      Open in Maps ↗
+    </a>
+  </div>
+</article>

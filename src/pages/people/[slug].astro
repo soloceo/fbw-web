@@ -1,0 +1,200 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import CTABanner from "~/components/CTABanner.astro";
+import { OFFICES, FIRM } from "~/data/firm";
+
+export async function getStaticPaths() {
+  const people = await getCollection("people", ({ data }) => !data.draft);
+  return people.map((person) => ({
+    params: { slug: person.id },
+    props: { person },
+  }));
+}
+
+const { person } = Astro.props;
+const { Content } = await render(person);
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const practiceEntries = await Promise.all(
+  person.data.practices.map((slug) => getEntry("practices", slug)),
+);
+const practices = practiceEntries.filter(
+  (p): p is NonNullable<typeof p> => p !== undefined,
+);
+
+const personOffices = OFFICES.filter((o) =>
+  person.data.offices.includes(o.slug),
+);
+
+const initials = person.data.name
+  .split(" ")
+  .filter(Boolean)
+  .map((n) => n[0])
+  .join("")
+  .slice(0, 2)
+  .toUpperCase();
+
+/* Person schema */
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: person.data.name,
+  jobTitle: person.data.title,
+  email: person.data.email,
+  telephone: person.data.phone,
+  worksFor: {
+    "@type": "LegalService",
+    name: FIRM.legalName,
+    url: FIRM.website,
+  },
+  knowsLanguage: person.data.languages,
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
+};
+---
+
+<BaseLayout
+  title={`${person.data.name} — ${person.data.title}`}
+  description={`${person.data.name}, ${person.data.title} at FBW LLP.`}
+  schema={schema}
+>
+  <section class="border-b border-graphite-200 bg-paper-50">
+    <div class="container-editorial pt-16 pb-16 md:pt-20 md:pb-20">
+      <nav aria-label="Breadcrumb" class="mb-8 text-xs uppercase tracking-[0.2em] text-graphite-500">
+        <a href={`${base}/people`} class="link-underline hover:text-gold-600">Our People</a>
+        <span class="mx-2">/</span>
+        <span class="text-graphite-700">{person.data.name}</span>
+      </nav>
+
+      <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-5">
+          {
+            person.data.photo ? (
+              <img
+                src={person.data.photo}
+                alt={person.data.name}
+                class="aspect-[3/4] w-full object-cover"
+              />
+            ) : (
+              <div class="flex aspect-[3/4] w-full items-center justify-center bg-gradient-to-br from-paper-200 to-paper-300">
+                <span class="font-display text-8xl text-graphite-300">{initials}</span>
+              </div>
+            )
+          }
+        </div>
+
+        <div class="lg:col-span-7">
+          <span class="eyebrow">{person.data.title}</span>
+          <h1 class="mt-5 font-display text-5xl leading-[1.02] tracking-[-0.015em] text-ink-900 md:text-6xl">
+            {person.data.name}
+          </h1>
+
+          <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-graphite-200 pt-8 text-sm">
+            {
+              person.data.phone && (
+                <div>
+                  <dt class="smallcaps text-xs text-graphite-500">Direct Line</dt>
+                  <dd class="nums mt-1 text-graphite-900">
+                    <a href={`tel:${person.data.phone.replace(/\s/g, "")}`} class="hover:text-gold-600">
+                      {person.data.phone}
+                    </a>
+                  </dd>
+                </div>
+              )
+            }
+            {
+              person.data.email && (
+                <div>
+                  <dt class="smallcaps text-xs text-graphite-500">Email</dt>
+                  <dd class="mt-1 text-graphite-900">
+                    <a href={`mailto:${person.data.email}`} class="link-underline hover:text-gold-600">
+                      {person.data.email}
+                    </a>
+                  </dd>
+                </div>
+              )
+            }
+            {
+              personOffices.length > 0 && (
+                <div>
+                  <dt class="smallcaps text-xs text-graphite-500">Offices</dt>
+                  <dd class="mt-1 text-graphite-900">
+                    {personOffices.map((o) => o.name).join(", ")}
+                  </dd>
+                </div>
+              )
+            }
+            {
+              person.data.languages.length > 0 && (
+                <div>
+                  <dt class="smallcaps text-xs text-graphite-500">Languages</dt>
+                  <dd class="mt-1 text-graphite-900">
+                    {person.data.languages.join(", ")}
+                  </dd>
+                </div>
+              )
+            }
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-paper-50">
+    <div class="container-editorial grid grid-cols-1 gap-12 py-20 md:py-28 lg:grid-cols-12 lg:gap-16">
+      <article class="prose prose-lg max-w-none lg:col-span-8 [&_h2]:font-display [&_h2]:text-3xl [&_h2]:mt-12 [&_h2]:mb-4 [&_h2]:text-ink-900 [&_p]:text-graphite-700 [&_p]:leading-relaxed [&_em]:text-graphite-500">
+        <Content />
+      </article>
+
+      <aside class="space-y-10 lg:col-span-4">
+        {
+          person.data.barAdmissions.length > 0 && (
+            <div class="border-t border-graphite-300 pt-6">
+              <h3 class="eyebrow">Bar Admissions</h3>
+              <ul class="mt-4 space-y-1.5 text-[15px] text-graphite-700">
+                {person.data.barAdmissions.map((b) => <li>{b}</li>)}
+              </ul>
+            </div>
+          )
+        }
+
+        {
+          person.data.education.length > 0 && (
+            <div class="border-t border-graphite-300 pt-6">
+              <h3 class="eyebrow">Education</h3>
+              <ul class="mt-4 space-y-1.5 text-[15px] text-graphite-700">
+                {person.data.education.map((e) => <li>{e}</li>)}
+              </ul>
+            </div>
+          )
+        }
+
+        {
+          practices.length > 0 && (
+            <div class="border-t border-graphite-300 pt-6">
+              <h3 class="eyebrow">Practice Areas</h3>
+              <ul class="mt-4 space-y-2.5">
+                {practices.map((p) => (
+                  <li>
+                    <a
+                      href={`${base}/practice-areas/${p.id}`}
+                      class="font-display text-lg text-ink-900 transition-colors hover:text-gold-600"
+                    >
+                      {p.data.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </aside>
+    </div>
+  </section>
+
+  <CTABanner
+    eyebrow={`Work with ${person.data.name.split(" ")[0]}`}
+    title="Start with a conversation."
+  />
+</BaseLayout>

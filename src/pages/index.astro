@@ -1,0 +1,214 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import PracticeCard from "~/components/PracticeCard.astro";
+import PersonCard from "~/components/PersonCard.astro";
+import OfficeCard from "~/components/OfficeCard.astro";
+import InsightCard from "~/components/InsightCard.astro";
+import CTABanner from "~/components/CTABanner.astro";
+import { OFFICES } from "~/data/firm";
+
+const practices = (await getCollection("practices", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const people = (await getCollection("people", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const foundingPartners = people.filter((p) => p.data.role === "founding-partner");
+
+const insights = (await getCollection("insights", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+  .slice(0, 3);
+---
+
+<BaseLayout
+  title="Counsel for the Greater Toronto Area"
+  description="FBW LLP — a Toronto, Markham, and Oakville law firm led by three founding partners across real estate, corporate, immigration, and private client matters."
+>
+  <Hero />
+
+  <!-- ======= Philosophy / Statement Section ======= -->
+  <section class="bg-paper-50">
+    <div class="container-editorial grid grid-cols-1 gap-12 py-24 md:py-32 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-4 reveal">
+        <span class="eyebrow">The Firm</span>
+        <h2 class="mt-5 font-display text-4xl leading-[1.05] text-ink-900 md:text-5xl">
+          A different kind of partnership.
+        </h2>
+      </div>
+
+      <div class="space-y-6 text-lg leading-relaxed text-graphite-700 lg:col-span-7 lg:col-start-6 reveal">
+        <p>
+          FBW LLP was founded on a simple idea: that individuals, families, and
+          business owners deserve a law firm where a partner is on every file
+          — and where the first conversation is always about listening.
+        </p>
+        <p>
+          Our three founding partners — Seth Freedman, Perry Benipal, and
+          Greg Wu — bring complementary strengths across commercial
+          litigation, real estate, corporate law, and immigration. Our
+          broader team extends that reach into private client work, family
+          law, and employment counsel. Together, we serve clients from
+          offices in Toronto, Markham, and Oakville.
+        </p>
+        <p class="border-l-2 border-gold-500 pl-6 font-display text-xl italic text-ink-900">
+          "We would rather know a small number of clients deeply — across
+          their business, their family, their life — than be transaction
+          lawyers to a much larger number."
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= Practice Areas ======= -->
+  <section class="bg-paper-100">
+    <div class="container-editorial py-24 md:py-32">
+      <div class="grid grid-cols-1 items-end gap-8 lg:grid-cols-12">
+        <div class="lg:col-span-7">
+          <SectionHeading
+            eyebrow="Practice Areas"
+            title="Counsel across the decisions that define a life or a business."
+          />
+        </div>
+        <div class="reveal lg:col-span-4 lg:col-start-9">
+          <p class="text-graphite-700">
+            We maintain a focused bench in the areas where our clients most
+            often need counsel — and refer out, openly, in the areas where
+            they don't.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-16 grid grid-cols-1 gap-x-12 md:grid-cols-2">
+        {
+          practices.map((p, i) => (
+            <PracticeCard
+              slug={p.id}
+              title={p.data.title}
+              summary={p.data.summary}
+              index={i}
+            />
+          ))
+        }
+      </div>
+
+      <div class="mt-12 flex justify-end">
+        <a
+          href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/practice-areas`}
+          class="inline-flex items-center gap-3 text-sm uppercase tracking-[0.22em] text-ink-900 hover:text-gold-600"
+        >
+          View all practice areas <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= People ======= -->
+  <section class="bg-paper-50">
+    <div class="container-editorial py-24 md:py-32">
+      <SectionHeading
+        eyebrow="The Partners"
+        title="Three founders, three practices, one standard of service."
+        lede="Every file at FBW LLP is partner‑led. Our founders are identified by name on every engagement letter — and accessible by phone and email throughout the life of a matter."
+      />
+
+      <div class="mt-16 grid grid-cols-2 gap-8 md:grid-cols-3 md:gap-10">
+        {
+          foundingPartners.map((person) => (
+            <PersonCard
+              slug={person.id}
+              name={person.data.name}
+              title={person.data.title}
+              photo={person.data.photo}
+              email={person.data.email}
+              languages={person.data.languages}
+              variant="feature"
+            />
+          ))
+        }
+      </div>
+
+      <div class="mt-12 flex justify-end">
+        <a
+          href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/people`}
+          class="inline-flex items-center gap-3 text-sm uppercase tracking-[0.22em] text-ink-900 hover:text-gold-600"
+        >
+          Meet the team <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= Offices ======= -->
+  <section class="bg-paper-100">
+    <div class="container-editorial py-24 md:py-32">
+      <SectionHeading
+        eyebrow="Offices"
+        title="Three offices across the Greater Toronto Area."
+        lede="We meet clients in the neighbourhoods where they live and do business. Every office is staffed by partners and associates — not just a conference‑room nameplate."
+      />
+
+      <div class="mt-16 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
+        {
+          OFFICES.map((office) => (
+            <OfficeCard
+              slug={office.slug}
+              name={office.name}
+              role={office.role}
+              address1={office.address1}
+              address2={office.address2}
+              city={office.city}
+              province={office.province}
+              postal={office.postal}
+              phone={office.phone}
+              email={office.email}
+              featured={office.role === "Head Office"}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= Insights ======= -->
+  <section class="bg-paper-50">
+    <div class="container-editorial py-24 md:py-32">
+      <div class="grid grid-cols-1 items-end gap-8 lg:grid-cols-12">
+        <div class="lg:col-span-8">
+          <SectionHeading
+            eyebrow="Insights"
+            title="Plain‑language guidance from our partners."
+          />
+        </div>
+        <div class="lg:col-span-4 lg:text-right">
+          <a
+            href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/insights`}
+            class="inline-flex items-center gap-3 text-sm uppercase tracking-[0.22em] text-ink-900 hover:text-gold-600"
+          >
+            All insights <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-16 grid grid-cols-1 gap-x-12 md:grid-cols-3">
+        {
+          insights.map((article) => (
+            <InsightCard
+              slug={article.id}
+              title={article.data.title}
+              summary={article.data.summary}
+              category={article.data.category}
+              publishedAt={article.data.publishedAt}
+              author={article.data.author}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CTABanner />
+</BaseLayout>

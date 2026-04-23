@@ -1,0 +1,63 @@
+---
+import { FIRM } from "~/data/firm";
+
+export interface Props {
+  eyebrow?: string;
+  title?: string;
+  body?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const {
+  eyebrow = "Schedule a consultation",
+  title = "Every matter begins with listening.",
+  body = `Tell us about your situation. We will respond within one business day and, where appropriate, arrange an initial consultation with the right member of our team.`,
+  ctaLabel = "Request Consultation",
+  ctaHref = `${base}/contact`,
+} = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-ink-950 text-paper-50">
+  <!-- Decorative gold rule -->
+  <div
+    class="absolute inset-x-0 top-0 h-px"
+    style="background: linear-gradient(90deg, transparent, var(--color-gold-500), transparent);"
+  >
+  </div>
+
+  <div class="container-editorial py-20 md:py-28 lg:py-32">
+    <div class="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7 reveal">
+        <span class="eyebrow" style="color: var(--color-gold-400);">{eyebrow}</span>
+        <h2 class="mt-6 font-display text-4xl leading-[1.05] text-paper-50 md:text-5xl lg:text-6xl">
+          {title}
+        </h2>
+      </div>
+
+      <div class="lg:col-span-5 reveal">
+        <p class="text-lg leading-relaxed text-paper-200/80">
+          {body}
+        </p>
+
+        <div class="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <a
+            href={ctaHref}
+            class="inline-flex items-center justify-center gap-3 border border-gold-500 bg-gold-500 px-8 py-4 text-xs uppercase tracking-[0.22em] text-ink-950 transition-colors hover:bg-gold-400 hover:border-gold-400"
+          >
+            {ctaLabel}
+            <span aria-hidden="true">→</span>
+          </a>
+          <a
+            href={`tel:${FIRM.mainPhone.replace(/\s/g, "")}`}
+            class="nums inline-flex items-center gap-3 text-sm text-paper-200/80 hover:text-gold-400"
+          >
+            <span class="smallcaps text-xs text-gold-400">or call</span>
+            {FIRM.mainPhone}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

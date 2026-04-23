@@ -1,0 +1,102 @@
+---
+import { FIRM, NAV_FOOTER, OFFICES } from "~/data/firm";
+
+const year = new Date().getFullYear();
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<footer class="bg-ink-950 text-paper-100">
+  <div class="container-editorial pt-20 pb-10 lg:pt-28 lg:pb-12">
+    <!-- Masthead row -->
+    <div class="grid grid-cols-1 gap-12 border-b border-ink-800 pb-12 lg:grid-cols-12 lg:gap-8">
+      <div class="lg:col-span-5">
+        <img
+          src={`${base}/brand/logo-white.svg`}
+          alt={FIRM.name}
+          class="h-12 w-auto"
+        />
+        <p class="mt-6 max-w-md text-sm leading-relaxed text-paper-200/80">
+          {FIRM.longDescription}
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
+          <a href={`tel:${FIRM.mainPhone.replace(/\s/g, "")}`} class="nums text-paper-100 hover:text-gold-400">
+            {FIRM.mainPhone}
+          </a>
+          <span class="text-ink-700">·</span>
+          <a href={`mailto:${FIRM.email}`} class="text-paper-100 hover:text-gold-400">
+            {FIRM.email}
+          </a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-2">
+        <h4 class="eyebrow" style="color: var(--color-gold-400);">Firm</h4>
+        <ul class="mt-5 space-y-2.5 text-sm">
+          {NAV_FOOTER.firm.map((item) => (
+            <li>
+              <a href={`${base}${item.href}`} class="text-paper-200/80 transition-colors hover:text-gold-400">
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="lg:col-span-2">
+        <h4 class="eyebrow" style="color: var(--color-gold-400);">Work</h4>
+        <ul class="mt-5 space-y-2.5 text-sm">
+          {NAV_FOOTER.work.map((item) => (
+            <li>
+              <a href={`${base}${item.href}`} class="text-paper-200/80 transition-colors hover:text-gold-400">
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="lg:col-span-3">
+        <h4 class="eyebrow" style="color: var(--color-gold-400);">Offices</h4>
+        <ul class="mt-5 space-y-5 text-sm">
+          {OFFICES.map((office) => (
+            <li>
+              <a href={`${base}/offices/${office.slug}`} class="group block">
+                <span class="smallcaps block text-xs text-gold-500 group-hover:text-gold-400">
+                  {office.name} {office.role === "Head Office" && "· Head Office"}
+                </span>
+                <span class="mt-1 block text-paper-200/80">
+                  {office.address1}{office.address2 ? `, ${office.address2}` : ""}
+                </span>
+                <span class="block text-paper-200/80">
+                  {office.city}, {office.province} {office.postal}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="flex flex-col gap-6 pt-8 text-xs text-paper-200/60 md:flex-row md:items-center md:justify-between">
+      <p>
+        © {year} {FIRM.legalName}. All rights reserved. FBW LLP is a Limited Liability Partnership
+        established in Ontario, Canada.
+      </p>
+      <ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
+        {NAV_FOOTER.legal.map((item) => (
+          <li>
+            <a href={`${base}${item.href}`} class="hover:text-gold-400">
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <p class="mt-10 text-[10px] uppercase tracking-[0.3em] text-ink-700">
+      This website is provided for general information only. Nothing on this site constitutes legal
+      advice or creates a solicitor–client relationship.
+    </p>
+  </div>
+</footer>
