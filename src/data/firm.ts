@@ -132,6 +132,6 @@ export const SEO_DEFAULT = {
     "immigration law",
     "wills and estates",
   ],
-  ogImage: "/brand/logo-gold.svg",
+  ogImage: "brand/logo-gold.svg",
   locale: "en_CA",
 } as const;

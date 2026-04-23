@@ -22,6 +22,16 @@ const {
 const fullTitle = title ? `${title} — ${FIRM.name}` : SEO_DEFAULT.title;
 const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).toString();
 
+// Resolve og:image relative to the site's base path (so it works under
+// GitHub Pages subpath as well as a future custom domain).
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const ogImagePath = ogImage.startsWith("http")
+  ? ogImage
+  : `${base}/${ogImage.replace(/^\//, "")}`;
+const ogImageUrl = ogImage.startsWith("http")
+  ? ogImage
+  : new URL(ogImagePath, Astro.site).toString();
+
 /* Base LegalService schema always included */
 const baseSchema: Record<string, unknown> = {
   "@context": "https://schema.org",
@@ -84,13 +94,13 @@ const structuredData = schema
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:site_name" content={FIRM.name} />
 <meta property="og:locale" content={SEO_DEFAULT.locale} />
-<meta property="og:image" content={new URL(ogImage, Astro.site).toString()} />
+<meta property="og:image" content={ogImageUrl} />
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={new URL(ogImage, Astro.site).toString()} />
+<meta name="twitter:image" content={ogImageUrl} />
 
 <!-- Structured Data -->
 <script type="application/ld+json" set:html={JSON.stringify(structuredData)} is:inline />
